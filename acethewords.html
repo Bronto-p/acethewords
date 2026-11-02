@@ -6,20 +6,23 @@
 <title>AceTheWords</title>
 <style>
 :root {
-  --bg: #f6f3ec; --surface: #fffdf8; --surface-2: #edeade; --text: #1d2421; --muted: #5a635e; --border: #d9d3c4; --hair: #e5e0d3;
-  --primary: #1d5c58; --primary-2: #133f3c; --primary-soft: #dbebe7; --on-primary: #fffdf8;
-  --good: #1f713b; --good-soft: #dfeee2; --bad: #ac2a21; --bad-soft: #f7e2dd; --warn: #84560a; --warn-soft: #f4e8cc;
-  --st-new: #cdc7b8; --st-learning: #d99a1f; --st-practicing: #3d78c9; --st-memorized: #2f8a4f; --practicing-text: #265a9f;
-  --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  /* Neutrals, one blue accent, and word states as deepening shades of it. Green and red only mean right and wrong; amber only warns. */
+  --bg: #f6f7f9; --surface: #ffffff; --surface-2: #eef0f4; --text: #161a22; --muted: #565e6d; --border: #dde1e8; --hair: #e7eaef;
+  --primary: #2448a0; --primary-2: #1a3678; --primary-soft: #e6edf9; --on-primary: #ffffff;
+  --good: #19763f; --good-soft: #e2f2e8; --bad: #b42318; --bad-soft: #fbe8e6; --warn: #875300; --warn-soft: #fbefd6;
+  --st-new: #d5dae3; --st-learning: #a8c1ee; --st-practicing: #5a85d6; --st-memorized: #2448a0;
+  --st-learning-text: #34589f; --st-practicing-text: #24489f; --st-memorized-text: #ffffff;
+  --fs-caption: 12px; --fs-small: 14px; --fs-body: 16px; --fs-h3: 18px; --fs-h1: 26px; --fs-display: 40px;
   --radius: 12px; --radius-sm: 8px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #141715; --surface: #1c201d; --surface-2: #272c28; --text: #eceee9; --muted: #a0a8a2; --border: #353b36; --hair: #2a2f2b;
-    --primary: #7fc9bf; --primary-2: #a3dbd3; --primary-soft: #1d3330; --on-primary: #0d1a18;
-    --good: #67d08b; --good-soft: #17301f; --bad: #ff8d83; --bad-soft: #3a1e1b; --warn: #f0b955; --warn-soft: #35290f;
-    --st-new: #484e49; --st-learning: #f0b955; --st-practicing: #6ea6f2; --st-memorized: #67d08b; --practicing-text: #8dbbf7;
+    --bg: #111318; --surface: #181b21; --surface-2: #22262e; --text: #e7e9ee; --muted: #9ca3b1; --border: #2d323c; --hair: #242932;
+    --primary: #8eb0f2; --primary-2: #b4cbf7; --primary-soft: #1e2b47; --on-primary: #0d1529;
+    --good: #56c98b; --good-soft: #152f20; --bad: #ff8a80; --bad-soft: #3a1e1c; --warn: #e6b04f; --warn-soft: #33280f;
+    --st-new: #363c48; --st-learning: #34508a; --st-practicing: #5f88d6; --st-memorized: #9dbbf4;
+    --st-learning-text: #b4cbf7; --st-practicing-text: #c9d9fa; --st-memorized-text: #0d1529;
     color-scheme: dark;
   }
 }
@@ -27,27 +30,30 @@
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--text);
-  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 400 var(--fs-body)/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-variant-numeric: tabular-nums; accent-color: var(--primary);
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
+b, strong, th, summary, h1, h2, h3 { font-weight: 600; }
 a { color: var(--primary); }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
 .muted { color: var(--muted); }
-.small { font-size: 13px; }
-.qword.small { font-size: 26px; margin-top: 12px; }
+.small { font-size: var(--fs-small); }
+.qword.small { font-size: var(--fs-h1); line-height: 1.25; letter-spacing: 0; margin-top: 12px; }
+.ctitle { font-size: var(--fs-h3); font-weight: 600; line-height: 1.25; }
+.defn { font-size: var(--fs-h3); font-weight: 600; }
 .hidden { display: none !important; }
 .ic { flex: none; vertical-align: -3px; }
 
 /* top bar */
 .topbar { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--hair); }
 .topbar .wrap { display: flex; align-items: center; gap: 14px; padding-top: 0; padding-bottom: 0; min-height: 56px; }
-.brand { font-weight: 700; font-size: 18px; letter-spacing: -.2px; margin-right: auto; display: flex; align-items: center; gap: 8px; }
+.brand { font-weight: 600; font-size: var(--fs-h3); margin-right: auto; display: flex; align-items: center; gap: 8px; }
 .brand .ic { color: var(--primary); }
 .nav { display: flex; gap: 2px; align-self: stretch; }
-.apipill { border: 1px solid var(--border); background: transparent; border-radius: 99px; padding: 3px 10px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--muted); white-space: nowrap; }
+.apipill { border: 1px solid var(--border); background: transparent; border-radius: 99px; padding: 3px 10px; font-weight: 600; font-size: var(--fs-small); cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--muted); white-space: nowrap; }
 .apipill i { width: 8px; height: 8px; border-radius: 50%; background: var(--st-new); }
 .apipill.ok i { background: var(--good); }
 .apipill.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-soft); }
@@ -57,12 +63,12 @@ a { color: var(--primary); }
 .thumbs { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
 .thumb { position: relative; }
 .thumb img { width: 84px; height: 84px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); display: block; }
-.thumb button { position: absolute; top: -7px; right: -7px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: var(--text); color: var(--bg); cursor: pointer; font-size: 12px; }
-.log-row { display: grid; grid-template-columns: 70px 1fr auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--hair); font-size: 14px; align-items: start; }
+.thumb button { position: absolute; top: -7px; right: -7px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: var(--text); color: var(--bg); cursor: pointer; font-size: var(--fs-caption); }
+.log-row { display: grid; grid-template-columns: 70px 1fr auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--hair); font-size: var(--fs-small); align-items: start; }
 .statusbox { border-radius: var(--radius-sm); padding: 12px 14px; font-weight: 600; margin: 10px 0; }
 .statusbox.ok { background: var(--good-soft); color: var(--good); } .statusbox.bad { background: var(--bad-soft); color: var(--bad); }
 .statusbox.off, .statusbox.idle, .statusbox.busy { background: var(--surface-2); color: var(--muted); }
-.nav a { display: flex; align-items: center; text-decoration: none; color: var(--muted); font-weight: 600; padding: 0 12px; font-size: 15px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.nav a { display: flex; align-items: center; text-decoration: none; color: var(--muted); font-weight: 600; padding: 0 12px; font-size: var(--fs-body); border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .nav a:hover { color: var(--text); }
 .nav a.on { color: var(--text); border-bottom-color: var(--primary); }
 @media (max-width: 600px) {
@@ -70,15 +76,15 @@ a { color: var(--primary); }
   .brand { height: 48px; }
   .apipill { order: 2; }
   .nav { order: 3; flex-basis: calc(100% + 32px); margin: 0 -16px; padding: 0 8px; border-top: 1px solid var(--hair); }
-  .nav a { flex: 1; justify-content: center; height: 40px; padding: 0 4px; font-size: 14px; }
+  .nav a { flex: 1; justify-content: center; height: 40px; padding: 0 4px; font-size: var(--fs-small); }
 }
 
-h1 { font: 600 28px/1.2 var(--serif); margin: 24px 0 8px; letter-spacing: -.2px; }
-h2 { font-size: 16px; font-weight: 700; margin: 28px 0 10px; }
+h1 { font-size: var(--fs-h1); line-height: 1.25; margin: 24px 0 8px; }
+h2 { font-size: var(--fs-h3); line-height: 1.25; margin: 28px 0 10px; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin: 12px 0; }
 .sec { border-top: 1px solid var(--hair); padding: 4px 0 8px; margin: 22px 0 0; }
 .sec > h2:first-child { margin-top: 14px; }
-.help { font-size: 13.5px; line-height: 1.5; color: var(--muted); margin: 6px 0 12px; max-width: 62ch; }
+.help { font-size: var(--fs-small); line-height: 1.5; color: var(--muted); margin: 6px 0 12px; max-width: 62ch; }
 details.help { max-width: none; }
 ul.help { padding-left: 18px; } ul.help li { margin: 3px 0; }
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -91,12 +97,12 @@ ul.help { padding-left: 18px; } ul.help li { margin: 3px 0; }
 .btn:active { transform: translateY(1px); }
 .btn.primary { background: var(--primary); color: var(--on-primary); }
 .btn.primary:hover { background: var(--primary-2); filter: none; }
-.btn.big { padding: 13px 24px; font-size: 17px; border-radius: var(--radius); }
+.btn.big { padding: 13px 24px; border-radius: var(--radius); }
 .btn.ghost { background: transparent; border: 1px solid var(--border); }
 .btn.danger { background: var(--bad-soft); color: var(--bad); }
-.btn.sm { padding: 5px 10px; font-size: 14px; }
+.btn.sm { padding: 5px 10px; font-size: var(--fs-small); }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
-.iconbtn { border: 0; background: var(--surface-2); width: 36px; height: 36px; border-radius: var(--radius-sm); cursor: pointer; font-size: 17px; display: inline-grid; place-items: center; vertical-align: middle; flex: none; }
+.iconbtn { border: 0; background: var(--surface-2); width: 36px; height: 36px; border-radius: var(--radius-sm); cursor: pointer; font-size: var(--fs-body); display: inline-grid; place-items: center; vertical-align: middle; flex: none; }
 
 input[type=text], input[type=password], input[type=date], input[type=number], input[type=search], select, textarea {
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 12px; width: 100%;
@@ -104,7 +110,7 @@ input[type=text], input[type=password], input[type=date], input[type=number], in
 textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
 input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); outline-offset: -1px; }
 label.field { display: block; margin: 10px 0; }
-label.field > span { display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+label.field > span { display: block; font-weight: 600; font-size: var(--fs-small); margin-bottom: 4px; }
 .check { display: flex; gap: 8px; align-items: center; }
 
 /* progress bars */
@@ -115,26 +121,27 @@ label.field > span { display: block; font-weight: 600; font-size: 14px; margin-b
 .bar .s-new { background: var(--st-new); } .bar .s-learning { background: var(--st-learning); }
 .bar .s-practicing { background: var(--st-practicing); } .bar .s-memorized { background: var(--st-memorized); }
 .bar.good > span { background: var(--good); }
-.legend { display: flex; gap: 6px 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 8px; }
+.legend { display: flex; gap: 6px 16px; flex-wrap: wrap; font-size: var(--fs-small); color: var(--muted); margin-top: 8px; }
 .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
 .legend .ic { color: var(--bad); margin-right: 4px; vertical-align: -2px; }
 
-.chip { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+.chip { display: inline-block; font-size: var(--fs-caption); line-height: 1.5; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
 .chip.new { background: var(--surface-2); }
-.chip.learning { background: color-mix(in srgb, var(--st-learning) 22%, transparent); color: var(--warn); }
-.chip.practicing { background: color-mix(in srgb, var(--st-practicing) 16%, transparent); color: var(--practicing-text); }
-.chip.memorized { background: var(--good-soft); color: var(--good); }
+.chip.learning { background: color-mix(in srgb, var(--st-learning) 35%, transparent); color: var(--st-learning-text); }
+.chip.practicing { background: color-mix(in srgb, var(--st-practicing) 30%, transparent); color: var(--st-practicing-text); }
+.chip.memorized { background: var(--st-memorized); color: var(--st-memorized-text); }
+.chip.soon { background: var(--warn-soft); color: var(--warn); }
 .chip.lchip { display: inline-flex; align-items: center; gap: 4px; }
-.chip.lchip .x { border: 0; background: none; color: inherit; cursor: pointer; padding: 0 0 0 2px; font-size: 11px; line-height: 1; opacity: .7; }
+.chip.lchip .x { border: 0; background: none; color: inherit; cursor: pointer; padding: 0 0 0 2px; font-size: var(--fs-caption); line-height: 1; opacity: .7; }
 .chip.lchip .x:hover { opacity: 1; color: var(--bad); }
 
 /* home and list dashboard */
-.today-head { display: flex; align-items: baseline; gap: 10px; font-size: 14px; }
-.today-head b { font-weight: 700; }
+.today-head { display: flex; align-items: baseline; gap: 10px; font-size: var(--fs-small); }
+.today-head b { font-size: var(--fs-body); }
 .today .bar { margin: 8px 0; }
-.streak { font-weight: 600; font-size: 13px; color: var(--warn); background: var(--warn-soft); padding: 2px 10px; border-radius: 6px; white-space: nowrap; }
+.streak { font-weight: 600; font-size: var(--fs-caption); color: var(--primary); background: var(--primary-soft); padding: 2px 10px; border-radius: 6px; white-space: nowrap; }
 .hero { display: grid; grid-template-columns: 1.25fr 1fr; gap: 20px 32px; padding: 14px 0 22px; align-items: start; }
-.hero .big { font-size: 44px; font-weight: 700; line-height: 1; letter-spacing: -1px; }
+.hero .big { font-size: var(--fs-display); font-weight: 600; line-height: 1.1; letter-spacing: -.02em; }
 .hero .today { padding-left: 32px; border-left: 1px solid var(--hair); }
 .hero .bar.thick { margin-top: 14px; }
 @media (max-width: 600px) { .hero { grid-template-columns: 1fr; } .hero .today { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--hair); } }
@@ -143,36 +150,36 @@ label.field > span { display: block; font-weight: 600; font-size: 14px; margin-b
 .mode:first-child { border-top: 0; }
 .mode:hover { background: var(--surface-2); }
 .mode .mico { flex: none; width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; }
-.mode .title { font-weight: 700; font-size: 17px; display: block; }
+.mode .title { font-weight: 600; font-size: var(--fs-h3); line-height: 1.25; display: block; }
 .mode .go { color: var(--muted); display: flex; align-items: center; gap: 10px; margin-left: auto; text-align: right; }
-.mode .count { font-weight: 600; font-size: 14px; color: var(--text); }
+.mode .count { font-weight: 600; font-size: var(--fs-small); color: var(--text); }
 .mtext { display: flex; flex-direction: column; gap: 0; min-width: 0; }
-@media (max-width: 600px) { .mode { padding: 14px; gap: 12px; } .mode .mtext .muted { display: none; } .mode .count { font-size: 13px; } }
+@media (max-width: 600px) { .mode { padding: 14px; gap: 12px; } .mode .mtext .muted { display: none; } }
 .units { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-.unit { flex: 1 1 90px; min-width: 90px; max-width: 150px; background: var(--surface-2); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 13px; }
-.unit b { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+.unit { flex: 1 1 90px; min-width: 90px; max-width: 150px; background: var(--surface-2); border-radius: var(--radius-sm); padding: 8px 10px; font-size: var(--fs-small); }
+.unit b { display: flex; align-items: center; gap: 4px; }
 .unit.locked { opacity: .6; }
 .unit.cur { outline: 2px solid var(--primary); }
-.warnbox { background: var(--warn-soft); color: var(--warn); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 14px; margin-top: 10px; font-weight: 600; }
+.warnbox { background: var(--warn-soft); color: var(--warn); border-radius: var(--radius-sm); padding: 10px 12px; font-size: var(--fs-small); margin-top: 10px; font-weight: 600; }
 .forecast { display: flex; align-items: flex-end; gap: 6px; height: 110px; padding-top: 8px; }
 .fc-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; min-width: 0; }
 .fc-stack { width: 100%; max-width: 26px; display: flex; flex-direction: column-reverse; border-radius: 4px; overflow: hidden; }
 .fc-stack .r { background: var(--primary); } .fc-stack .n { background: var(--st-learning); }
-.fc-lab { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.fc-num { font-size: 11px; color: var(--muted); }
-.fc-col.test .fc-lab { color: var(--bad); font-weight: 700; }
+.fc-lab { font-size: var(--fs-caption); color: var(--muted); white-space: nowrap; }
+.fc-num { font-size: var(--fs-caption); color: var(--muted); }
+.fc-col.test .fc-lab { color: var(--bad); font-weight: 600; }
 .lists-grid { margin: 14px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .ltile { text-decoration: none; color: inherit; border-top: 1px solid var(--hair); padding: 16px 18px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; align-items: center; min-width: 0; }
 .ltile:first-child { border-top: 0; }
 .ltile:hover { background: var(--surface-2); }
-.ltile .lname { font-weight: 700; font-size: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ltile .lpct { font-size: 24px; font-weight: 700; line-height: 1; grid-row: 1 / 3; grid-column: 2; text-align: right; }
-.ltile .lpct small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 3px; }
+.ltile .lname { font-weight: 600; font-size: var(--fs-h3); line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ltile .lpct { font-size: var(--fs-h1); font-weight: 600; line-height: 1.1; grid-row: 1 / 3; grid-column: 2; text-align: right; }
+.ltile .lpct small { display: block; font-size: var(--fs-caption); font-weight: 400; line-height: 1.5; color: var(--muted); margin-top: 3px; }
 .ltile .bar, .ltile .lfoot { grid-column: 1 / -1; }
 .ltile .bar { margin-top: 10px; }
-.ltile .lfoot { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 14px; }
+.ltile .lfoot { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: var(--fs-small); }
 .ltile .lstatus { color: var(--primary); font-weight: 600; margin-right: auto; }
-.backlink { display: inline-block; margin-top: 18px; font-weight: 600; text-decoration: none; color: var(--muted); font-size: 14px; }
+.backlink { display: inline-block; margin-top: 18px; font-weight: 600; text-decoration: none; color: var(--muted); font-size: var(--fs-small); }
 .backlink:hover { color: var(--primary); }
 .list-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 4px; }
 .list-head h1 { margin: 0; margin-right: auto; overflow-wrap: anywhere; }
@@ -182,31 +189,31 @@ label.field > span { display: block; font-weight: 600; font-size: 14px; margin-b
 .wl-filters { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px; }
 @media (max-width: 600px) { .wl-filters { grid-template-columns: 1fr 1fr; } .wl-filters input { grid-column: 1 / -1; } }
 #wordRows { margin-top: 10px; }
-.wl-row { display: grid; grid-template-columns: minmax(110px, 1.1fr) 2.4fr auto 90px; gap: 12px; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--hair); cursor: pointer; border-radius: var(--radius-sm); }
+.wl-row { display: grid; grid-template-columns: minmax(110px, 1.1fr) 2.4fr 92px 90px; gap: 12px; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--hair); cursor: pointer; border-radius: var(--radius-sm); }
 .wl-row:hover { background: var(--surface-2); }
-.wl-row .w { font-weight: 700; }
-.wl-row .d { color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.wl-row > .chip { justify-self: end; }
+.wl-row .w { font-weight: 600; }
+.wl-row .d { color: var(--muted); font-size: var(--fs-small); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 @media (max-width: 600px) { .wl-row { grid-template-columns: 1fr auto; } .wl-row .d { grid-column: 1 / -1; grid-row: 2; } .wl-row .bar { grid-column: 1 / -1; } }
 
 /* add progress */
 .ap-row { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--hair); flex-wrap: wrap; }
-.ap-row .w { font-weight: 700; min-width: 110px; }
+.ap-row .w { font-weight: 600; min-width: 110px; }
 .ok { color: var(--good); } .err { color: var(--bad); } .wait { color: var(--muted); }
 
 /* modal */
 .modal-back { position: fixed; inset: 0; background: rgba(12,16,14,.5); z-index: 50; display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
 .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 620px; padding: 22px; box-shadow: 0 16px 48px rgba(0,0,0,.28); position: relative; }
 .modal .close { position: absolute; top: 14px; right: 14px; }
-.modal h2 { font-size: 18px; }
 .sense { display: flex; gap: 10px; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; align-items: flex-start; }
 .sense:hover { background: var(--surface-2); }
 .sense.on { background: var(--primary-soft); }
 .kv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.kv div { background: var(--surface-2); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 14px; }
-.kv b { display: block; font-size: 18px; }
+.kv div { background: var(--surface-2); border-radius: var(--radius-sm); padding: 8px 10px; font-size: var(--fs-small); }
+.kv b { display: block; font-size: var(--fs-h3); line-height: 1.25; }
 .kv.rows { grid-template-columns: 1fr; gap: 0; }
 .kv.rows div { background: none; border-radius: 0; padding: 8px 0; border-bottom: 1px solid var(--hair); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.kv.rows b { font-size: 15px; white-space: nowrap; }
+.kv.rows b { font-size: var(--fs-body); white-space: nowrap; }
 @media (max-width: 520px) { .kv { grid-template-columns: 1fr 1fr; } .kv.rows { grid-template-columns: 1fr; } }
 details summary { cursor: pointer; font-weight: 600; margin: 8px 0; }
 ul.tight { margin: 4px 0; padding-left: 20px; } ul.tight li { margin: 3px 0; }
@@ -216,19 +223,19 @@ ul.tight { margin: 4px 0; padding-left: 20px; } ul.tight li { margin: 3px 0; }
 body.in-session { overflow: hidden; }
 .sess-top { display: flex; align-items: center; gap: 12px; max-width: 760px; margin: 0 auto; padding: 14px 16px; }
 .sess-top .bar { flex: 1; height: 8px; }
-.sess-count { font-weight: 600; color: var(--good); font-size: 14px; white-space: nowrap; }
+.sess-count { font-weight: 600; color: var(--primary); font-size: var(--fs-small); white-space: nowrap; }
 .sess-body { max-width: 680px; margin: 0 auto; padding: 8px 16px 60px; }
-.qprompt { font-size: 16px; font-weight: 600; color: var(--muted); margin: 20px 0 14px; }
+.qprompt { font-size: var(--fs-small); font-weight: 600; color: var(--muted); margin: 20px 0 14px; }
 .qprompt b { color: var(--text); }
-.qword { font: 600 42px/1.15 var(--serif); letter-spacing: -.3px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.qphon { color: var(--muted); font-size: 16px; }
-.qdef { font-size: 22px; font-weight: 600; line-height: 1.35; }
-.qsent { font-size: 22px; font-weight: 500; line-height: 1.5; }
+.qword { font-size: var(--fs-display); font-weight: 600; line-height: 1.1; letter-spacing: -.02em; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.qphon { color: var(--muted); }
+.qdef { font-size: var(--fs-h3); font-weight: 600; line-height: 1.4; }
+.qsent { font-size: var(--fs-h3); line-height: 1.5; }
 .blank { display: inline-block; min-width: 90px; border-bottom: 2px solid var(--primary); margin: 0 4px; }
 .options { display: grid; gap: 10px; margin-top: 22px; }
-.opt { text-align: left; border: 1.5px solid var(--border); background: var(--surface); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; font-size: 17px; font-weight: 500; transition: border-color .12s, background .12s; }
+.opt { text-align: left; border: 1.5px solid var(--border); background: var(--surface); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; font-size: var(--fs-body); font-weight: 400; transition: border-color .12s, background .12s; }
 .opt:hover:not(:disabled) { border-color: var(--primary); }
-.opt .key { flex: none; width: 24px; height: 24px; border-radius: 6px; background: var(--surface-2); display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+.opt .key { flex: none; width: 24px; height: 24px; border-radius: 6px; background: var(--surface-2); display: grid; place-items: center; font-size: var(--fs-caption); font-weight: 600; color: var(--muted); margin-top: 2px; }
 .opt.correct { border-color: var(--good); background: var(--good-soft); }
 .opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
 .opt:disabled { cursor: default; }
@@ -237,28 +244,28 @@ body.in-session { overflow: hidden; }
 .btn.sel { outline: 3px solid var(--primary); outline-offset: 2px; }
 .rates .btn.picked { outline: 3px solid currentColor; outline-offset: 2px; opacity: 1; }
 .iconbtn:disabled { opacity: .35; cursor: default; }
-.lookback { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--primary-soft); color: var(--primary); border-radius: var(--radius-sm); padding: 8px 10px 8px 14px; font-weight: 600; font-size: 14px; margin-top: 8px; }
-.opt .why { display: block; font-size: 14px; font-weight: 500; color: var(--bad); margin-top: 6px; }
+.lookback { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--primary-soft); color: var(--primary); border-radius: var(--radius-sm); padding: 8px 10px 8px 14px; font-weight: 600; font-size: var(--fs-small); margin-top: 8px; }
+.opt .why { display: block; font-size: var(--fs-small); font-weight: 400; color: var(--bad); margin-top: 6px; }
 .feedback { margin-top: 18px; border-radius: var(--radius); padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--border); }
 .feedback:has(.verdict.ok) { border-left-color: var(--good); } .feedback:has(.verdict.bad) { border-left-color: var(--bad); }
-.feedback .verdict { font-weight: 700; font-size: 18px; margin-bottom: 4px; }
+.feedback .verdict { font-weight: 600; font-size: var(--fs-h3); line-height: 1.25; margin-bottom: 4px; }
 .feedback .verdict.ok { color: var(--good); } .feedback .verdict.bad { color: var(--bad); }
 .ex { font-style: italic; color: var(--muted); margin-top: 6px; }
-mark { background: color-mix(in srgb, var(--st-learning) 35%, transparent); color: inherit; border-radius: 3px; padding: 0 2px; }
+mark { background: color-mix(in srgb, var(--primary) 16%, transparent); color: inherit; border-radius: 3px; padding: 0 2px; }
 .flash { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 24px; text-align: center; margin-top: 10px; }
 .flash .qword { justify-content: center; }
 .flash .back { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--hair); text-align: left; }
 .rates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
 .rates .btn { padding: 12px 6px; flex-direction: column; gap: 2px; }
-.rates .btn small { font-weight: 500; color: var(--muted); font-size: 12px; }
+.rates .btn small { font-weight: 400; color: var(--muted); font-size: var(--fs-caption); }
 .rate-1 { background: var(--bad-soft) !important; color: var(--bad) !important; }
 .rate-2 { background: var(--warn-soft) !important; color: var(--warn) !important; }
 .rate-3 { background: var(--good-soft) !important; color: var(--good) !important; }
 .rate-4 { background: var(--primary-soft) !important; color: var(--primary) !important; }
-.keyhint { font-size: 12px; color: var(--muted); text-align: center; margin-top: 14px; }
+.keyhint { font-size: var(--fs-caption); color: var(--muted); text-align: center; margin-top: 14px; }
 @media (hover: none) { .keyhint, .opt .key { display: none; } }
 .sum-row { display: grid; grid-template-columns: 1fr auto 120px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--hair); }
-@media (max-width: 520px) { .qword { font-size: 34px; } .qsent, .qdef { font-size: 19px; } .sum-row { grid-template-columns: 1fr auto; } .sum-row .bar { grid-column: 1 / -1; } }
+@media (max-width: 520px) { :root { --fs-display: 32px; } .sum-row { grid-template-columns: 1fr auto; } .sum-row .bar { grid-column: 1 / -1; } }
 
 /* toasts */
 #toasts { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 60; display: flex; flex-direction: column; gap: 8px; align-items: center; width: calc(100% - 32px); max-width: 420px; pointer-events: none; }
@@ -532,7 +539,7 @@ const api = {
         ${failedWords && gen.hasKey() ? `<button class="btn sm" data-act="apiRetry">Retry ${plural(failedWords, 'failed word')}</button>` : ''}
         <span class="spacer"></span>${rows ? '<button class="btn sm ghost" data-act="apiClear">Clear log</button>' : ''}
       </div>
-      <h2 style="font-size:16px">Recent calls</h2>
+      <h2>Recent calls</h2>
       ${rows || '<p class="small muted">No calls yet.</p>'}`;
   },
 };
@@ -1512,7 +1519,7 @@ const runner = {
   },
   wordFacts(w) {
     const syn = info.synonyms(w), ant = info.antonyms(w), ex = info.example(w);
-    return `<div style="margin-top:6px">${info.pos(w) ? `<span class="chip">${esc(info.pos(w))}</span> ` : ''}<b style="font-size:19px">${esc(info.def(w))}</b></div>
+    return `<div style="margin-top:6px">${info.pos(w) ? `<span class="chip">${esc(info.pos(w))}</span> ` : ''}<b class="defn">${esc(info.def(w))}</b></div>
       ${ex ? `<div class="ex">“${highlight(ex, w.word)}”</div>` : ''}
       ${syn.length ? `<div class="small muted" style="margin-top:8px">Similar: ${syn.map(esc).join(', ')}${ant.length ? ` · Opposite: ${ant.map(esc).join(', ')}` : ''}</div>` : ''}`;
   },
@@ -1829,7 +1836,7 @@ const ui = {
   goalCard(td, title = "Today's goal", aside = '') {
     return `<div class="today">
         <div class="today-head"><b>${title}</b><span class="spacer"></span><span class="muted">${td.done} / ${td.planned} questions</span></div>
-        ${pctBar(td.planned ? td.done / td.planned : 1, '', 'var(--good)')}
+        ${pctBar(td.planned ? td.done / td.planned : 1)}
         <div class="row small muted" style="gap:8px"><span>${td.newLeft || td.due ? `Still to do: ${plural(td.newLeft, 'new word')} + ${plural(td.due, 'review')} · about ${td.mins} min` : 'All done for today — great work!'}
           ${td.overflow ? ` · Busy day: about ${td.overflow} questions can wait until tomorrow.` : ''}</span>${aside}</div>
       </div>`;
@@ -1909,7 +1916,7 @@ const ui = {
           else if (!avail) action = `<span class="muted small">Unit ${list.unlocked + 1} unlocks when 80% of Unit ${list.unlocked} is practiced.</span> <button class="btn sm" data-act="unlockNext" data-list="${esc(n)}">Unlock now</button>`;
           else if (allow) action = `<button class="btn primary" data-act="startLearn" data-list="${esc(n)}">Learn ${Math.min(allow, avail, Number(db.settings.batchSize) || 5)} words</button>`;
           else action = `<span class="ok small"><b>✓ Today's new words done</b></span> <button class="btn sm" data-act="startLearn" data-list="${esc(n)}" data-extra="1">Learn ${Math.min(avail, Number(db.settings.batchSize) || 5)} extra</button>`;
-          return `<div class="card"><div class="row"><b style="font-size:18px">${esc(n)}</b><span class="spacer"></span>${t && t.upcoming ? `<span class="chip">${testText(t)}</span>` : ''}</div>
+          return `<div class="card"><div class="row"><b class="ctitle">${esc(n)}</b><span class="spacer"></span>${t && t.upcoming ? `<span class="chip">${testText(t)}</span>` : ''}</div>
             <div class="muted small" style="margin:4px 0 10px">${totalNew} new · ${allow} left for today${t && t.upcoming ? ` (pace: ${plan.newPerDay(n, totalNew + plan.introducedToday(list))}/day to finish before the test)` : ''}</div>
             <div class="row">${action}</div>${ui.unitTrack(n)}</div>`;
         }).join('') || `<div class="card empty"><p>No lists yet.</p><button class="btn primary" data-act="go" data-to="add">Add words</button></div>`}`;
@@ -1922,7 +1929,7 @@ const ui = {
       if (sc && d.list !== sc) { d.list = sc; d.unit = ''; }
       const learnTo = sc ? `${ui.listHash(sc)}/learn` : 'learn';
       return `${ui.backLink()}<h1 style="margin-top:6px">Practice</h1><p class="help">Questions get harder as each word gets stronger. Words you miss come back a few questions later.</p>
-        <div class="card"><div class="row"><div><b style="font-size:18px">${due ? plural(due, 'word') + ' due' : 'Nothing due right now'}</b>
+        <div class="card"><div class="row"><div><b class="ctitle">${due ? plural(due, 'word') + ' due' : 'Nothing due right now'}</b>
           <div class="muted small">${due ? `A session is up to ${db.settings.sessionSize} questions.` : studied ? 'You can still practice your weakest words.' : 'Learn some words first.'}</div></div><span class="spacer"></span>
           ${due ? `<button class="btn primary big" data-act="startPractice" data-list="${esc(sc)}">Start practice</button>` : studied ? `<button class="btn big" data-act="startPractice" data-list="${esc(sc)}" data-extra="1">Extra practice</button>` : `<button class="btn primary" data-act="go" data-to="${esc(learnTo)}">Go to Learn</button>`}</div></div>
         <div class="sec"><h2>Drill one type</h2>
@@ -1951,12 +1958,12 @@ const ui = {
       });
       if (!scopes.some(([v]) => v === r.scope)) r.scope = 'memorized';
       return `${ui.backLink()}<h1 style="margin-top:6px">Review</h1><p class="help">Memorized words still fade over time. Review brings them back right before you'd forget.</p>
-        <div class="card"><div class="row"><div><b style="font-size:18px">${due ? plural(due, 'memorized word') + ' due' : 'No memorized words due'}</b>
+        <div class="card"><div class="row"><div><b class="ctitle">${due ? plural(due, 'memorized word') + ' due' : 'No memorized words due'}</b>
           <div class="muted small">${memd} memorized in total</div></div><span class="spacer"></span>
           <button class="btn primary big" data-act="startReviewDue" data-list="${esc(sc)}" ${due ? '' : 'disabled'}>Start review</button></div></div>
         ${testLists.length ? `<div class="sec"><h2>Test prep</h2>${testLists.map(n => { const t = plan.testInfo(db.lists[n]); return `<div class="card"><div class="row"><div><b>${esc(n)}</b> · ${testText(t)}
             <div class="muted small">Practices the words most likely to be forgotten by test day.</div></div><span class="spacer"></span><button class="btn primary" data-act="startTestPrep" data-list="${esc(n)}">Test prep</button></div>
-            <div style="margin-top:10px">${pctBar(plan.readiness(n), '', 'var(--good)')}</div><div class="small muted" style="margin-top:4px">${Math.round(plan.readiness(n) * 100)}% ready</div></div>`; }).join('')}</div>` : ''}
+            <div style="margin-top:10px">${pctBar(plan.readiness(n))}</div><div class="small muted" style="margin-top:4px">${Math.round(plan.readiness(n) * 100)}% ready</div></div>`; }).join('')}</div>` : ''}
         <div class="sec"><h2>Review anything</h2>
           <label class="field"><span>Words</span><select data-rev="scope">${scopes.map(([v, l]) => `<option value="${esc(v)}" ${v === r.scope ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
           <div class="grid2">
@@ -1993,7 +2000,7 @@ const ui = {
           : `<p class="small">Needs a DeepSeek key — add one in <a href="#settings">Settings</a>.</p>`}
           <details style="margin-top:14px"><summary>Use another AI instead (ChatGPT, Claude, Gemini…)</summary>
             <p class="help" style="margin:4px 0 8px">Copy this prompt, paste it into the other AI together with the photo, then paste its answer into the word box above.</p>
-            <textarea id="otherAiPrompt" readonly style="min-height:220px;font-size:13px">${esc(otherAiPrompt())}</textarea>
+            <textarea id="otherAiPrompt" class="small" readonly style="min-height:220px">${esc(otherAiPrompt())}</textarea>
             <button class="btn sm" data-act="copyPrompt" style="margin-top:8px">Copy prompt</button>
           </details>
         </div>
@@ -2050,7 +2057,7 @@ const ui = {
             <button class="btn" data-act="retryLookups">Retry failed lookups</button><span class="spacer"></span><button class="btn danger" data-act="resetAll">Erase everything</button></div>
           <p class="help" style="margin-top:12px">Progress is saved in this browser. Export a backup now and then so it isn't lost if browser data is cleared.</p>
         </div>
-        <details class="sec help"><summary style="font-size:15px;color:var(--text)">How the memory model works</summary>
+        <details class="sec help"><summary style="color:var(--text)">How the memory model works</summary>
           AceTheWords uses FSRS-5, the spaced-repetition model behind Anki's modern scheduler. It tracks each word's <i>stability</i> (how many days until the chance of remembering drops to 90%) and <i>difficulty</i>, and predicts the chance of remembering it right now. Correct answers on harder questions and answers after longer gaps grow stability the most (the spacing and testing effects). A word counts as memorized once it is stable enough, has been recalled on 3 separate days, and passed a hard question.
         </details>`;
     },
@@ -2094,7 +2101,7 @@ const ui = {
       <div class="lpct">${pct}%<small>memorized</small></div>
       <div class="muted small">${plural(all.length, 'word')} · ${plural(list.units.length, 'unit')}</div>
       ${stackedBar(c, 'thin')}
-      <div class="lfoot"><span class="lstatus">${status}</span>${t && t.upcoming ? `<span class="chip ${t.d <= 3 ? 'learning' : ''}">${testText(t)}</span>` : ''}</div>
+      <div class="lfoot"><span class="lstatus">${status}</span>${t && t.upcoming ? `<span class="chip ${t.d <= 3 ? 'soon' : ''}">${testText(t)}</span>` : ''}</div>
     </a>`;
   },
   listCard(n) {
@@ -2108,7 +2115,7 @@ const ui = {
         <button class="btn sm ghost" data-act="addToList" data-list="${esc(n)}">${icon('plus')} Words</button></div>
       <div class="muted small" style="margin-top:4px">${plural(ws.length, 'word')} · ${plural(list.units.length, 'unit')}</div>
       ${t && t.upcoming ? `<div class="row small" style="margin-top:14px"><b>${testText(t)}</b><span class="muted">${fmtDay(list.testDate)}</span><span class="spacer"></span><b class="${ready >= 0.8 ? 'ok' : ''}">${Math.round(ready * 100)}% ready</b></div>
-        <div style="margin-top:6px" title="Average predicted chance of remembering each word on test day">${pctBar(ready, '', 'var(--good)')}</div>` : ''}
+        <div style="margin-top:6px" title="Average predicted chance of remembering each word on test day">${pctBar(ready)}</div>` : ''}
       ${ui.unitTrack(n)}
       ${plan.warnings(n).map(w => `<div class="warnbox">${esc(w)}</div>`).join('')}
     </div>`;
@@ -2160,7 +2167,7 @@ const ui = {
     return `<div class="card"><div class="row"><b>Adding ${plural(ws.length, 'word')} to “${esc(job.list)}”</b><span class="spacer"></span>
         <span class="small muted">${[job.shared?.length ? `${job.shared.length} shared from other lists` : '', job.skipped.length ? `${job.skipped.length} already in this list, skipped` : ''].filter(Boolean).join(' · ')}</span></div>
       <div style="margin:10px 0 4px" class="small muted">Dictionary ${dictDone}/${ws.length}</div>${pctBar(dictDone / Math.max(1, ws.length))}
-      ${genTargets.length ? `<div style="margin:10px 0 4px" class="small muted">Questions ${genDone}/${ws.length}</div>${pctBar(genDone / Math.max(1, ws.length), '', 'var(--good)')}` : ''}
+      ${genTargets.length ? `<div style="margin:10px 0 4px" class="small muted">Questions ${genDone}/${ws.length}</div>${pctBar(genDone / Math.max(1, ws.length))}` : ''}
       <div style="margin-top:10px">${ws.map(st).join('')}</div>
       ${job.done && db.lists[job.list] ? `<div class="row" style="margin-top:14px"><button class="btn primary" data-act="go" data-to="${esc(ui.listHash(job.list))}/learn">Start learning</button><button class="btn" data-act="go" data-to="${esc(ui.listHash(job.list))}">Open “${esc(job.list)}”</button></div>` : ''}</div>`;
   },
@@ -2239,7 +2246,7 @@ const ui = {
     const names = Object.keys(w.lists), multi = names.length > 1;
     const others = Object.keys(db.lists).filter(n => !inList(w, n));
     return names.map(n => `<span class="chip lchip">${esc(n)} · Unit ${w.lists[n] + 1}${multi ? `<button class="x" data-act="removeFromList" data-w="${esc(w.word)}" data-list="${esc(n)}" title="Remove from “${esc(n)}” (progress is kept)" aria-label="Remove from ${esc(n)}">✕</button>` : ''}</span>`).join('')
-      + (others.length ? `<select id="alsoAdd" data-w="${esc(w.word)}" style="width:auto;padding:2px 8px;font-size:12px"><option value="">＋ Add to another list…</option>${others.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('')}</select>` : '')
+      + (others.length ? `<select id="alsoAdd" data-w="${esc(w.word)}" class="small" style="width:auto;padding:2px 8px"><option value="">＋ Add to another list…</option>${others.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('')}</select>` : '')
       + (multi ? `<div class="small muted" style="flex-basis:100%">Shared word: studying it in any list counts for all of them.</div>` : '');
   },
   closeModal() { $('#modal').innerHTML = ''; },
