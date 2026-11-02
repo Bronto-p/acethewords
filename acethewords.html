@@ -4,26 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AceTheWords</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f5f6fb; --surface: #ffffff; --surface-2: #f0f2f8; --text: #1c2033; --muted: #646b85; --border: #e2e5ef;
-  --primary: #5b5bd6; --primary-2: #4646c0; --primary-soft: #ececfd; --on-primary: #ffffff;
-  --good: #16955a; --good-soft: #e3f5eb; --bad: #e0464b; --bad-soft: #fdeced; --warn: #b86e00; --warn-soft: #fff3de;
-  --st-new: #cdd2e1; --st-learning: #f5a524; --st-practicing: #4a8cf7; --st-memorized: #16955a;
-  --shadow: 0 1px 2px rgba(20,24,50,.05), 0 6px 20px rgba(20,24,50,.06);
-  --radius: 16px;
+  --bg: #f6f3ec; --surface: #fffdf8; --surface-2: #edeade; --text: #1d2421; --muted: #5a635e; --border: #d9d3c4; --hair: #e5e0d3;
+  --primary: #1d5c58; --primary-2: #133f3c; --primary-soft: #dbebe7; --on-primary: #fffdf8;
+  --good: #1f713b; --good-soft: #dfeee2; --bad: #ac2a21; --bad-soft: #f7e2dd; --warn: #84560a; --warn-soft: #f4e8cc;
+  --st-new: #cdc7b8; --st-learning: #d99a1f; --st-practicing: #3d78c9; --st-memorized: #2f8a4f; --practicing-text: #265a9f;
+  --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --radius: 12px; --radius-sm: 8px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111219; --surface: #1a1c26; --surface-2: #232633; --text: #eceef6; --muted: #9aa0b8; --border: #2d3140;
-    --primary: #8d8df7; --primary-2: #a6a6ff; --primary-soft: #282a4a; --on-primary: #111219;
-    --good: #3ccf7e; --good-soft: #15301f; --bad: #ff6b70; --bad-soft: #3a1c1f; --warn: #f0a83a; --warn-soft: #3a2b12;
-    --st-new: #3a3f52; --st-learning: #f0a83a; --st-practicing: #5f9bff; --st-memorized: #3ccf7e;
-    --shadow: none;
+    --bg: #141715; --surface: #1c201d; --surface-2: #272c28; --text: #eceee9; --muted: #a0a8a2; --border: #353b36; --hair: #2a2f2b;
+    --primary: #7fc9bf; --primary-2: #a3dbd3; --primary-soft: #1d3330; --on-primary: #0d1a18;
+    --good: #67d08b; --good-soft: #17301f; --bad: #ff8d83; --bad-soft: #3a1e1b; --warn: #f0b955; --warn-soft: #35290f;
+    --st-new: #484e49; --st-learning: #f0b955; --st-practicing: #6ea6f2; --st-memorized: #67d08b; --practicing-text: #8dbbf7;
     color-scheme: dark;
   }
 }
@@ -31,181 +27,208 @@
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--text);
-  font: 16px/1.5 "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-variant-numeric: tabular-nums; accent-color: var(--primary);
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
 a { color: var(--primary); }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
 .muted { color: var(--muted); }
 .small { font-size: 13px; }
 .qword.small { font-size: 26px; margin-top: 12px; }
 .hidden { display: none !important; }
+.ic { flex: none; vertical-align: -3px; }
 
 /* top bar */
-.topbar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
-.topbar .wrap { display: flex; align-items: center; gap: 12px; padding-top: 10px; padding-bottom: 10px; }
-.brand { font-weight: 800; font-size: 20px; letter-spacing: -.3px; margin-right: auto; display: flex; align-items: center; gap: 8px; }
-.brand-dot { width: 26px; height: 26px; border-radius: 8px; background: var(--primary); color: var(--on-primary); display: grid; place-items: center; font-size: 15px; }
-.nav { display: flex; gap: 4px; }
-.apipill { border: 1px solid var(--border); background: var(--surface); border-radius: 99px; padding: 4px 10px; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--muted); white-space: nowrap; }
+.topbar { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--hair); }
+.topbar .wrap { display: flex; align-items: center; gap: 14px; padding-top: 0; padding-bottom: 0; min-height: 56px; }
+.brand { font-weight: 700; font-size: 18px; letter-spacing: -.2px; margin-right: auto; display: flex; align-items: center; gap: 8px; }
+.brand .ic { color: var(--primary); }
+.nav { display: flex; gap: 2px; align-self: stretch; }
+.apipill { border: 1px solid var(--border); background: transparent; border-radius: 99px; padding: 3px 10px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--muted); white-space: nowrap; }
 .apipill i { width: 8px; height: 8px; border-radius: 50%; background: var(--st-new); }
 .apipill.ok i { background: var(--good); }
 .apipill.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-soft); }
 .apipill.bad i { background: var(--bad); }
 .apipill.busy i { background: var(--warn); animation: pulse 1s infinite; }
 @keyframes pulse { 50% { opacity: .25; } }
-@media (max-width: 520px) { .apipill .lab { display: none; } }
 .thumbs { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
 .thumb { position: relative; }
-.thumb img { width: 84px; height: 84px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); display: block; }
+.thumb img { width: 84px; height: 84px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); display: block; }
 .thumb button { position: absolute; top: -7px; right: -7px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: var(--text); color: var(--bg); cursor: pointer; font-size: 12px; }
-.log-row { display: grid; grid-template-columns: 70px 1fr auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; align-items: start; }
-.statusbox { border-radius: 12px; padding: 12px 14px; font-weight: 600; margin: 10px 0; }
+.log-row { display: grid; grid-template-columns: 70px 1fr auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--hair); font-size: 14px; align-items: start; }
+.statusbox { border-radius: var(--radius-sm); padding: 12px 14px; font-weight: 600; margin: 10px 0; }
 .statusbox.ok { background: var(--good-soft); color: var(--good); } .statusbox.bad { background: var(--bad-soft); color: var(--bad); }
 .statusbox.off, .statusbox.idle, .statusbox.busy { background: var(--surface-2); color: var(--muted); }
-.nav a { text-decoration: none; color: var(--muted); font-weight: 700; padding: 6px 10px; border-radius: 10px; font-size: 15px; }
-.nav a.on { background: var(--primary-soft); color: var(--primary); }
-@media (max-width: 520px) { .nav a { padding: 6px 7px; font-size: 14px; } .brand span.name { display: none; } }
+.nav a { display: flex; align-items: center; text-decoration: none; color: var(--muted); font-weight: 600; padding: 0 12px; font-size: 15px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.nav a:hover { color: var(--text); }
+.nav a.on { color: var(--text); border-bottom-color: var(--primary); }
+@media (max-width: 600px) {
+  .topbar .wrap { flex-wrap: wrap; gap: 0 12px; min-height: 0; }
+  .brand { height: 48px; }
+  .apipill { order: 2; }
+  .nav { order: 3; flex-basis: calc(100% + 32px); margin: 0 -16px; padding: 0 8px; border-top: 1px solid var(--hair); }
+  .nav a { flex: 1; justify-content: center; height: 40px; padding: 0 4px; font-size: 14px; }
+}
 
-h1 { font-size: 26px; margin: 24px 0 8px; letter-spacing: -.4px; }
-h2 { font-size: 18px; margin: 28px 0 10px; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin: 12px 0; }
+h1 { font: 600 28px/1.2 var(--serif); margin: 24px 0 8px; letter-spacing: -.2px; }
+h2 { font-size: 16px; font-weight: 700; margin: 28px 0 10px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin: 12px 0; }
+.sec { border-top: 1px solid var(--hair); padding: 4px 0 8px; margin: 22px 0 0; }
+.sec > h2:first-child { margin-top: 14px; }
+.help { font-size: 13.5px; line-height: 1.5; color: var(--muted); margin: 6px 0 12px; max-width: 62ch; }
+details.help { max-width: none; }
+ul.help { padding-left: 18px; } ul.help li { margin: 3px 0; }
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .spacer { flex: 1; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
 
-.btn { border: 0; border-radius: 12px; padding: 10px 16px; font-weight: 700; cursor: pointer; background: var(--surface-2); color: var(--text); transition: transform .05s, background .15s; }
-.btn:hover { filter: brightness(.97); }
+.btn { border: 0; border-radius: var(--radius-sm); padding: 9px 16px; font-weight: 600; cursor: pointer; background: var(--surface-2); color: var(--text); transition: transform .05s, background .15s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; }
+.btn:hover { filter: brightness(.96); }
 .btn:active { transform: translateY(1px); }
 .btn.primary { background: var(--primary); color: var(--on-primary); }
-.btn.primary:hover { background: var(--primary-2); }
-.btn.big { padding: 14px 22px; font-size: 17px; border-radius: 14px; }
+.btn.primary:hover { background: var(--primary-2); filter: none; }
+.btn.big { padding: 13px 24px; font-size: 17px; border-radius: var(--radius); }
 .btn.ghost { background: transparent; border: 1px solid var(--border); }
 .btn.danger { background: var(--bad-soft); color: var(--bad); }
-.btn.sm { padding: 6px 10px; font-size: 14px; border-radius: 10px; }
+.btn.sm { padding: 5px 10px; font-size: 14px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
-.iconbtn { border: 0; background: var(--surface-2); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 17px; display: inline-grid; place-items: center; vertical-align: middle; }
+.iconbtn { border: 0; background: var(--surface-2); width: 36px; height: 36px; border-radius: var(--radius-sm); cursor: pointer; font-size: 17px; display: inline-grid; place-items: center; vertical-align: middle; flex: none; }
 
 input[type=text], input[type=password], input[type=date], input[type=number], input[type=search], select, textarea {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; width: 100%;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 12px; width: 100%;
 }
 textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
 input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); outline-offset: -1px; }
 label.field { display: block; margin: 10px 0; }
-label.field > span { display: block; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+label.field > span { display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px; }
 .check { display: flex; gap: 8px; align-items: center; }
 
 /* progress bars */
-.bar { height: 10px; border-radius: 99px; background: var(--surface-2); overflow: hidden; display: flex; }
+.bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; display: flex; }
 .bar > span { display: block; height: 100%; background: var(--primary); transition: width .4s ease; }
-.bar.thick { height: 16px; }
-.bar.thin { height: 6px; }
+.bar.thick { height: 12px; }
+.bar.thin { height: 5px; }
 .bar .s-new { background: var(--st-new); } .bar .s-learning { background: var(--st-learning); }
 .bar .s-practicing { background: var(--st-practicing); } .bar .s-memorized { background: var(--st-memorized); }
 .bar.good > span { background: var(--good); }
-.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 8px; }
-.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.legend { display: flex; gap: 6px 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 8px; }
+.legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+.legend .ic { color: var(--bad); margin-right: 4px; vertical-align: -2px; }
 
-.chip { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 99px; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+.chip { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
 .chip.new { background: var(--surface-2); }
-.chip.learning { background: color-mix(in srgb, var(--st-learning) 20%, transparent); color: var(--warn); }
-.chip.practicing { background: color-mix(in srgb, var(--st-practicing) 18%, transparent); color: var(--st-practicing); }
+.chip.learning { background: color-mix(in srgb, var(--st-learning) 22%, transparent); color: var(--warn); }
+.chip.practicing { background: color-mix(in srgb, var(--st-practicing) 16%, transparent); color: var(--practicing-text); }
 .chip.memorized { background: var(--good-soft); color: var(--good); }
 .chip.lchip { display: inline-flex; align-items: center; gap: 4px; }
 .chip.lchip .x { border: 0; background: none; color: inherit; cursor: pointer; padding: 0 0 0 2px; font-size: 11px; line-height: 1; opacity: .7; }
 .chip.lchip .x:hover { opacity: 1; color: var(--bad); }
 
-/* home */
-.hero .big { font-size: 44px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
-.hero-top { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
-.streak { margin-left: auto; font-weight: 800; background: var(--warn-soft); color: var(--warn); padding: 6px 12px; border-radius: 99px; font-size: 14px; }
-.modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
-.mode { text-align: left; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius); padding: 18px; cursor: pointer; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 4px; }
-.mode:hover { border-color: var(--primary); }
-.mode .emoji { font-size: 28px; }
-.mode .title { font-weight: 800; font-size: 19px; }
-.mode .count { font-weight: 700; color: var(--primary); }
-.mtext { display: flex; flex-direction: column; gap: 2px; }
-@media (max-width: 600px) {
-  .modes { grid-template-columns: 1fr; gap: 8px; }
-  .mode { flex-direction: row; align-items: center; gap: 14px; padding: 14px 16px; }
-  .mode .mtext .muted { display: none; }
-}
-.units { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.unit { flex: 1 1 90px; min-width: 90px; max-width: 150px; background: var(--surface-2); border-radius: 12px; padding: 8px 10px; font-size: 13px; }
-.unit b { display: block; font-size: 13px; }
-.unit.locked { opacity: .55; }
+/* home and list dashboard */
+.today-head { display: flex; align-items: baseline; gap: 10px; font-size: 14px; }
+.today-head b { font-weight: 700; }
+.today .bar { margin: 8px 0; }
+.streak { font-weight: 600; font-size: 13px; color: var(--warn); background: var(--warn-soft); padding: 2px 10px; border-radius: 6px; white-space: nowrap; }
+.hero { display: grid; grid-template-columns: 1.25fr 1fr; gap: 20px 32px; padding: 14px 0 22px; align-items: start; }
+.hero .big { font-size: 44px; font-weight: 700; line-height: 1; letter-spacing: -1px; }
+.hero .today { padding-left: 32px; border-left: 1px solid var(--hair); }
+.hero .bar.thick { margin-top: 14px; }
+@media (max-width: 600px) { .hero { grid-template-columns: 1fr; } .hero .today { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--hair); } }
+.modes { margin: 4px 0 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.mode { width: 100%; text-align: left; border: 0; border-top: 1px solid var(--hair); background: transparent; padding: 14px 18px; cursor: pointer; display: flex; align-items: center; gap: 14px; }
+.mode:first-child { border-top: 0; }
+.mode:hover { background: var(--surface-2); }
+.mode .mico { flex: none; width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; }
+.mode .title { font-weight: 700; font-size: 17px; display: block; }
+.mode .go { color: var(--muted); display: flex; align-items: center; gap: 10px; margin-left: auto; text-align: right; }
+.mode .count { font-weight: 600; font-size: 14px; color: var(--text); }
+.mtext { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+@media (max-width: 600px) { .mode { padding: 14px; gap: 12px; } .mode .mtext .muted { display: none; } .mode .count { font-size: 13px; } }
+.units { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.unit { flex: 1 1 90px; min-width: 90px; max-width: 150px; background: var(--surface-2); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 13px; }
+.unit b { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+.unit.locked { opacity: .6; }
 .unit.cur { outline: 2px solid var(--primary); }
-.warnbox { background: var(--warn-soft); color: var(--warn); border-radius: 12px; padding: 10px 12px; font-size: 14px; margin-top: 10px; font-weight: 600; }
+.warnbox { background: var(--warn-soft); color: var(--warn); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 14px; margin-top: 10px; font-weight: 600; }
 .forecast { display: flex; align-items: flex-end; gap: 6px; height: 110px; padding-top: 8px; }
 .fc-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; min-width: 0; }
-.fc-stack { width: 100%; max-width: 26px; display: flex; flex-direction: column-reverse; border-radius: 6px; overflow: hidden; }
+.fc-stack { width: 100%; max-width: 26px; display: flex; flex-direction: column-reverse; border-radius: 4px; overflow: hidden; }
 .fc-stack .r { background: var(--primary); } .fc-stack .n { background: var(--st-learning); }
 .fc-lab { font-size: 11px; color: var(--muted); white-space: nowrap; }
 .fc-num { font-size: 11px; color: var(--muted); }
-.fc-col.test .fc-lab { color: var(--bad); font-weight: 800; }
-.lists-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 12px 0; }
-@media (max-width: 600px) { .lists-grid { grid-template-columns: 1fr; } }
-.ltile { text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); cursor: pointer; display: flex; flex-direction: column; gap: 8px; min-height: 150px; min-width: 0; }
-.ltile:hover { border-color: var(--primary); }
-.ltile .lname { font-weight: 800; font-size: 19px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ltile .lpct { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
-.ltile .lstatus { font-size: 14px; font-weight: 700; color: var(--primary); margin-top: auto; }
-.ltile.newtile { border: 2px dashed var(--border); background: transparent; box-shadow: none; align-items: center; justify-content: center; color: var(--primary); font: inherit; font-weight: 800; font-size: 17px; }
-.ltile.newtile:hover { border-color: var(--primary); background: var(--primary-soft); }
-.backlink { display: inline-block; margin-top: 18px; font-weight: 700; text-decoration: none; color: var(--muted); font-size: 15px; }
+.fc-col.test .fc-lab { color: var(--bad); font-weight: 700; }
+.lists-grid { margin: 14px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.ltile { text-decoration: none; color: inherit; border-top: 1px solid var(--hair); padding: 16px 18px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; align-items: center; min-width: 0; }
+.ltile:first-child { border-top: 0; }
+.ltile:hover { background: var(--surface-2); }
+.ltile .lname { font-weight: 700; font-size: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ltile .lpct { font-size: 24px; font-weight: 700; line-height: 1; grid-row: 1 / 3; grid-column: 2; text-align: right; }
+.ltile .lpct small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 3px; }
+.ltile .bar, .ltile .lfoot { grid-column: 1 / -1; }
+.ltile .bar { margin-top: 10px; }
+.ltile .lfoot { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 14px; }
+.ltile .lstatus { color: var(--primary); font-weight: 600; margin-right: auto; }
+.backlink { display: inline-block; margin-top: 18px; font-weight: 600; text-decoration: none; color: var(--muted); font-size: 14px; }
 .backlink:hover { color: var(--primary); }
 .list-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 4px; }
 .list-head h1 { margin: 0; margin-right: auto; overflow-wrap: anywhere; }
+.list-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 /* word list */
 .wl-filters { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px; }
 @media (max-width: 600px) { .wl-filters { grid-template-columns: 1fr 1fr; } .wl-filters input { grid-column: 1 / -1; } }
-.wl-row { display: grid; grid-template-columns: minmax(110px, 1.1fr) 2.4fr auto 90px; gap: 12px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--border); cursor: pointer; }
+#wordRows { margin-top: 10px; }
+.wl-row { display: grid; grid-template-columns: minmax(110px, 1.1fr) 2.4fr auto 90px; gap: 12px; align-items: center; padding: 12px 6px; border-bottom: 1px solid var(--hair); cursor: pointer; border-radius: var(--radius-sm); }
 .wl-row:hover { background: var(--surface-2); }
-.wl-row .w { font-weight: 800; }
+.wl-row .w { font-weight: 700; }
 .wl-row .d { color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 @media (max-width: 600px) { .wl-row { grid-template-columns: 1fr auto; } .wl-row .d { grid-column: 1 / -1; grid-row: 2; } .wl-row .bar { grid-column: 1 / -1; } }
 
 /* add progress */
-.ap-row { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-.ap-row .w { font-weight: 800; min-width: 110px; }
+.ap-row { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--hair); flex-wrap: wrap; }
+.ap-row .w { font-weight: 700; min-width: 110px; }
 .ok { color: var(--good); } .err { color: var(--bad); } .wait { color: var(--muted); }
 
 /* modal */
-.modal-back { position: fixed; inset: 0; background: rgba(10,12,25,.45); z-index: 50; display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
-.modal { background: var(--surface); border-radius: 20px; width: 100%; max-width: 620px; padding: 22px; box-shadow: 0 20px 60px rgba(0,0,0,.25); position: relative; }
+.modal-back { position: fixed; inset: 0; background: rgba(12,16,14,.5); z-index: 50; display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 620px; padding: 22px; box-shadow: 0 16px 48px rgba(0,0,0,.28); position: relative; }
 .modal .close { position: absolute; top: 14px; right: 14px; }
-.sense { display: flex; gap: 10px; padding: 8px; border-radius: 10px; cursor: pointer; align-items: flex-start; }
+.modal h2 { font-size: 18px; }
+.sense { display: flex; gap: 10px; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; align-items: flex-start; }
 .sense:hover { background: var(--surface-2); }
 .sense.on { background: var(--primary-soft); }
 .kv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.kv div { background: var(--surface-2); border-radius: 10px; padding: 8px 10px; }
+.kv div { background: var(--surface-2); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 14px; }
 .kv b { display: block; font-size: 18px; }
-@media (max-width: 520px) { .kv { grid-template-columns: 1fr 1fr; } }
-details summary { cursor: pointer; font-weight: 700; margin: 8px 0; }
+.kv.rows { grid-template-columns: 1fr; gap: 0; }
+.kv.rows div { background: none; border-radius: 0; padding: 8px 0; border-bottom: 1px solid var(--hair); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.kv.rows b { font-size: 15px; white-space: nowrap; }
+@media (max-width: 520px) { .kv { grid-template-columns: 1fr 1fr; } .kv.rows { grid-template-columns: 1fr; } }
+details summary { cursor: pointer; font-weight: 600; margin: 8px 0; }
 ul.tight { margin: 4px 0; padding-left: 20px; } ul.tight li { margin: 3px 0; }
 
 /* session */
 #session { position: fixed; inset: 0; background: var(--bg); z-index: 40; overflow-y: auto; }
 body.in-session { overflow: hidden; }
 .sess-top { display: flex; align-items: center; gap: 12px; max-width: 760px; margin: 0 auto; padding: 14px 16px; }
-.sess-top .bar { flex: 1; height: 12px; }
-.sess-count { font-weight: 800; color: var(--good); font-size: 14px; white-space: nowrap; }
+.sess-top .bar { flex: 1; height: 8px; }
+.sess-count { font-weight: 600; color: var(--good); font-size: 14px; white-space: nowrap; }
 .sess-body { max-width: 680px; margin: 0 auto; padding: 8px 16px 60px; }
-.qtype { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .6px; color: var(--primary); margin: 18px 0 6px; }
-.qinst { color: var(--muted); font-weight: 600; margin-bottom: 14px; }
-.qword { font-size: 40px; font-weight: 800; letter-spacing: -.5px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; line-height: 1.15; }
-.qphon { color: var(--muted); font-size: 16px; font-weight: 600; }
-.qdef { font-size: 22px; font-weight: 700; line-height: 1.35; }
-.qsent { font-size: 22px; font-weight: 600; line-height: 1.5; }
-.blank { display: inline-block; min-width: 90px; border-bottom: 3px solid var(--primary); margin: 0 4px; }
+.qprompt { font-size: 16px; font-weight: 600; color: var(--muted); margin: 20px 0 14px; }
+.qprompt b { color: var(--text); }
+.qword { font: 600 42px/1.15 var(--serif); letter-spacing: -.3px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.qphon { color: var(--muted); font-size: 16px; }
+.qdef { font-size: 22px; font-weight: 600; line-height: 1.35; }
+.qsent { font-size: 22px; font-weight: 500; line-height: 1.5; }
+.blank { display: inline-block; min-width: 90px; border-bottom: 2px solid var(--primary); margin: 0 4px; }
 .options { display: grid; gap: 10px; margin-top: 22px; }
-.opt { text-align: left; border: 2px solid var(--border); background: var(--surface); border-radius: 14px; padding: 14px 16px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; font-size: 17px; font-weight: 600; transition: border-color .12s, background .12s; }
+.opt { text-align: left; border: 1.5px solid var(--border); background: var(--surface); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start; font-size: 17px; font-weight: 500; transition: border-color .12s, background .12s; }
 .opt:hover:not(:disabled) { border-color: var(--primary); }
-.opt .key { flex: none; width: 26px; height: 26px; border-radius: 8px; background: var(--surface-2); display: grid; place-items: center; font-size: 13px; font-weight: 800; color: var(--muted); margin-top: 1px; }
+.opt .key { flex: none; width: 24px; height: 24px; border-radius: 6px; background: var(--surface-2); display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--muted); margin-top: 2px; }
 .opt.correct { border-color: var(--good); background: var(--good-soft); }
 .opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
 .opt:disabled { cursor: default; }
@@ -214,41 +237,42 @@ body.in-session { overflow: hidden; }
 .btn.sel { outline: 3px solid var(--primary); outline-offset: 2px; }
 .rates .btn.picked { outline: 3px solid currentColor; outline-offset: 2px; opacity: 1; }
 .iconbtn:disabled { opacity: .35; cursor: default; }
-.lookback { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--primary-soft); color: var(--primary); border-radius: 12px; padding: 8px 10px 8px 14px; font-weight: 700; font-size: 14px; margin-top: 8px; }
-.opt .why { display: block; font-size: 14px; font-weight: 600; color: var(--bad); margin-top: 6px; }
-.feedback { margin-top: 18px; border-radius: 16px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); }
-.feedback .verdict { font-weight: 800; font-size: 18px; margin-bottom: 6px; }
+.lookback { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: var(--primary-soft); color: var(--primary); border-radius: var(--radius-sm); padding: 8px 10px 8px 14px; font-weight: 600; font-size: 14px; margin-top: 8px; }
+.opt .why { display: block; font-size: 14px; font-weight: 500; color: var(--bad); margin-top: 6px; }
+.feedback { margin-top: 18px; border-radius: var(--radius); padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--border); }
+.feedback:has(.verdict.ok) { border-left-color: var(--good); } .feedback:has(.verdict.bad) { border-left-color: var(--bad); }
+.feedback .verdict { font-weight: 700; font-size: 18px; margin-bottom: 4px; }
 .feedback .verdict.ok { color: var(--good); } .feedback .verdict.bad { color: var(--bad); }
 .ex { font-style: italic; color: var(--muted); margin-top: 6px; }
-mark { background: color-mix(in srgb, var(--st-learning) 35%, transparent); color: inherit; border-radius: 4px; padding: 0 2px; }
-.flash { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 30px 24px; box-shadow: var(--shadow); text-align: center; margin-top: 10px; }
+mark { background: color-mix(in srgb, var(--st-learning) 35%, transparent); color: inherit; border-radius: 3px; padding: 0 2px; }
+.flash { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 24px; text-align: center; margin-top: 10px; }
 .flash .qword { justify-content: center; }
-.flash .back { margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--border); text-align: left; }
+.flash .back { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--hair); text-align: left; }
 .rates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
-.rates .btn { padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.rates .btn small { font-weight: 600; color: var(--muted); font-size: 12px; }
+.rates .btn { padding: 12px 6px; flex-direction: column; gap: 2px; }
+.rates .btn small { font-weight: 500; color: var(--muted); font-size: 12px; }
 .rate-1 { background: var(--bad-soft) !important; color: var(--bad) !important; }
 .rate-2 { background: var(--warn-soft) !important; color: var(--warn) !important; }
 .rate-3 { background: var(--good-soft) !important; color: var(--good) !important; }
 .rate-4 { background: var(--primary-soft) !important; color: var(--primary) !important; }
 .keyhint { font-size: 12px; color: var(--muted); text-align: center; margin-top: 14px; }
 @media (hover: none) { .keyhint, .opt .key { display: none; } }
-.sum-row { display: grid; grid-template-columns: 1fr auto 120px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
-@media (max-width: 520px) { .qword { font-size: 32px; } .qsent, .qdef { font-size: 19px; } .sum-row { grid-template-columns: 1fr auto; } .sum-row .bar { grid-column: 1 / -1; } }
+.sum-row { display: grid; grid-template-columns: 1fr auto 120px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--hair); }
+@media (max-width: 520px) { .qword { font-size: 34px; } .qsent, .qdef { font-size: 19px; } .sum-row { grid-template-columns: 1fr auto; } .sum-row .bar { grid-column: 1 / -1; } }
 
 /* toasts */
 #toasts { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 60; display: flex; flex-direction: column; gap: 8px; align-items: center; width: calc(100% - 32px); max-width: 420px; pointer-events: none; }
-.toast { background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,.2); animation: pop .25s ease; text-align: center; }
-.toast.good { background: var(--good); color: #fff; } .toast.bad { background: var(--bad); color: #fff; } .toast.warn { background: var(--warn); color: #fff; }
+.toast { background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,.2); animation: pop .25s ease; text-align: center; }
+.toast.good { background: var(--good); color: var(--bg); } .toast.bad { background: var(--bad); color: var(--bg); } .toast.warn { background: var(--warn); color: var(--bg); }
 @keyframes pop { from { transform: translateY(10px); opacity: 0; } }
-.empty { text-align: center; padding: 36px 18px; }
-.empty .emoji { font-size: 44px; }
+.empty { text-align: center; padding: 32px 18px; }
+.empty .eico { color: var(--muted); }
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
-    <div class="brand"><div class="brand-dot">A</div><span class="name">AceTheWords</span></div>
+    <div class="brand"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="m8 12.5 3 3 5-6.5"/></svg><span class="name">AceTheWords</span></div>
     <button class="apipill" id="apiPill" data-act="apiPanel" title="DeepSeek connection"><i></i>AI<span class="lab"></span></button>
     <nav class="nav" id="nav">
       <a href="#home" data-r="home">Home</a>
@@ -1316,9 +1340,9 @@ function record(w, grade, type, ms) {
     db.streak.last = today;
   }
   const after = info.state(w);
-  if (after === 'memorized' && before !== 'memorized') toast(`🎉 “${w.word}” is memorized!`, 'good');
+  if (after === 'memorized' && before !== 'memorized') toast(`“${w.word}” is memorized!`, 'good');
   if (before === 'memorized' && after !== 'memorized') toast(`Let's practice “${w.word}” again`, 'warn');
-  for (const n of Object.keys(w.lists)) if (units.autoUnlock(n)) toast(`🔓 A new unit in “${n}” is unlocked!`, 'good');
+  for (const n of Object.keys(w.lists)) if (units.autoUnlock(n)) toast(`A new unit in “${n}” is unlocked!`, 'good');
   store.save();
   return w.mem.S > S0;
 }
@@ -1439,11 +1463,11 @@ const runner = {
         <button class="iconbtn" data-act="sessPrev" ${s.past.length ? '' : 'disabled'} aria-label="Previous word" title="Look back at the words (Backspace)">←</button>
         <div class="bar"><span style="width:100%"></span></div></div>
       <div class="sess-body">
-        <div class="empty" style="padding-bottom:10px"><div class="emoji">${pct >= 80 ? '🌟' : pct >= 50 ? '👍' : '💪'}</div>
+        <div class="empty" style="padding-bottom:10px">
           <h1 style="margin:8px 0">${esc(s.title)} done!</h1>
           <div class="muted">${s.log.length ? `${s.correct} of ${s.log.length} correct (${pct}%) · ` : ''}${plural(s.strong.size, 'word')} got stronger</div>
         </div>
-        <div class="card">
+        <div>
           ${keys.map(k => { const w = db.words[k]; if (!w) return ''; const b = byWord[k]; const st = info.state(w);
             return `<div class="sum-row"><div><b>${esc(w.word)}</b> <span class="muted small">${b ? `${b.ok}/${b.n} correct` : 'introduced'}</span></div>
               <span class="chip ${st}">${STATE_LABEL[st]}</span>
@@ -1469,7 +1493,7 @@ const runner = {
     else if (q.kind === 'card') body = runner.renderCard(w, c, viewing);
     else body = runner.renderMcq(q, c, viewing);
     const canPrev = viewing ? s.view > 0 : s.past.length > 0;
-    const banner = viewing ? `<div class="lookback"><span>👀 Looking back · ${s.view + 1} of ${s.past.length}</span><span class="spacer"></span>
+    const banner = viewing ? `<div class="lookback"><span>Looking back · ${s.view + 1} of ${s.past.length}</span><span class="spacer"></span>
         <button class="btn sm" data-act="sessPrev" ${canPrev ? '' : 'disabled'}>← Previous</button>
         <button class="btn sm" data-act="sessFwd">Next →</button>
         <button class="btn sm primary" data-act="sessResume">${s.finished ? 'Back to summary' : 'Back to current'}</button></div>` : '';
@@ -1478,12 +1502,12 @@ const runner = {
         <button class="iconbtn" data-act="sessExit" aria-label="Exit session" title="Exit (Esc)">✕</button>
         <button class="iconbtn" data-act="sessPrev" ${canPrev ? '' : 'disabled'} aria-label="Previous word" title="Previous word (Backspace)">←</button>
         <div class="bar" title="${pct}% done"><span style="width:${pct}%"></span></div>
-        <div class="sess-count" title="Words that got stronger this session">💪 ${s.strong.size}</div>
+        <div class="sess-count" title="Words that got stronger this session">${s.strong.size} stronger</div>
       </div>
       <div class="sess-body">${banner}${body}${viewing ? `<div class="keyhint">← → to move between words · Esc to go back</div>` : ''}</div>`;
   },
   wordHead(w, size = '') {
-    return `<div class="qword ${size}">${esc(w.word)} ${w.data?.audio || window.speechSynthesis ? `<button class="iconbtn" data-act="say" data-w="${esc(w.word)}" title="Hear it">🔊</button>` : ''}</div>
+    return `<div class="qword ${size}">${esc(w.word)} ${w.data?.audio || window.speechSynthesis ? `<button class="iconbtn" data-act="say" data-w="${esc(w.word)}" title="Hear it" aria-label="Hear it">${icon('volume', 18)}</button>` : ''}</div>
       ${w.data?.phonetic ? `<div class="qphon">${esc(w.data.phonetic)}</div>` : ''}`;
   },
   wordFacts(w) {
@@ -1493,7 +1517,7 @@ const runner = {
       ${syn.length ? `<div class="small muted" style="margin-top:8px">Similar: ${syn.map(esc).join(', ')}${ant.length ? ` · Opposite: ${ant.map(esc).join(', ')}` : ''}</div>` : ''}`;
   },
   renderIntro(w, viewing = false) {
-    return `<div class="qtype">${TYPE_LABEL.intro}</div>
+    return `<div class="qprompt">${TYPE_LABEL.intro}</div>
       <div class="flash">${runner.wordHead(w)}<div class="back" style="margin-top:14px;padding-top:14px">${runner.wordFacts(w)}</div></div>
       ${viewing ? '' : `<div class="row" style="justify-content:center;margin-top:20px"><button class="btn primary big" data-act="introNext" data-nav>Got it — next</button></div>
       <div class="keyhint">Space, Enter or → to continue${runner.prevHint()}</div>`}`;
@@ -1502,12 +1526,11 @@ const runner = {
     const flipped = c.flipped || viewing;
     const rates = [[1, 'Forgot'], [2, 'Hard'], [3, 'Got it'], [4, 'Easy']].map(([g, l]) =>
       `<button class="btn rate-${g} ${viewing && c.answered?.g === g ? 'picked' : ''}" data-act="rate" data-g="${g}" ${viewing ? 'disabled' : 'data-nav'}>${l}<small>${g}</small></button>`).join('');
-    return `<div class="qtype">${TYPE_LABEL.card}</div>
-      <div class="qinst">Think of what it means, then flip the card.</div>
+    return `<div class="qprompt">Think of what it means, then flip the card.</div>
       <div class="flash">${runner.wordHead(w)}
         ${flipped ? `<div class="back">${runner.wordFacts(w)}</div>` : ''}
       </div>
-      ${flipped ? `<div class="qinst" style="text-align:center;margin:18px 0 0">${viewing ? (c.answered ? 'Your rating:' : 'Not rated yet') : 'How well did you know it?'}</div>
+      ${flipped ? `<div class="qprompt" style="text-align:center;margin:18px 0 0">${viewing ? (c.answered ? 'Your rating:' : 'Not rated yet') : 'How well did you know it?'}</div>
         <div class="rates">${rates}</div>${viewing ? '' : `<div class="keyhint">Keys 1–4, or ← → then Enter${runner.prevHint(false)}</div>`}`
         : `<div class="row" style="justify-content:center;margin-top:20px"><button class="btn primary big" data-act="flip" data-nav>Show answer</button></div><div class="keyhint">Space, Enter or → to flip${runner.prevHint()}</div>`}`;
   },
@@ -1549,7 +1572,7 @@ const runner = {
         ${viewing ? '' : `<div class="row" style="justify-content:center;margin-top:16px"><button class="btn primary big" data-act="cont" data-nav>Continue</button></div>
         <div class="keyhint">Space, Enter or → to continue${runner.prevHint()}</div>`}`;
     }
-    return `<div class="qtype">${TYPE_LABEL[q.type]}</div><div class="qinst">${inst}</div>${prompt}
+    return `<div class="qprompt">${inst}</div>${prompt}
       <div class="options">${opts}</div>${fb}
       ${!a && !viewing ? `<div class="keyhint">↑ ↓ to choose, Enter to answer · or keys ${q.kind === 'usage' ? 'A / B' : '1–4'}${runner.prevHint(false)}</div>` : ''}`;
   },
@@ -1596,7 +1619,7 @@ const modes = {
   },
   practice(extra = false, name = '') {
     const words = modes.practicePool(extra, name).slice(0, Number(db.settings.sessionSize) || 15);
-    if (!words.length) { toast(extra ? 'Learn some words first!' : 'Nothing due right now 🎉'); return; }
+    if (!words.length) { toast(extra ? 'Learn some words first!' : 'Nothing due right now'); return; }
     runner.start({
       title: 'Practice', stages: [shuffle(words).map(w => ({ key: w.word, type: null }))],
       requeue: (item, w, type) => mem.easier(type, w),
@@ -1652,7 +1675,7 @@ const modes = {
     const at = t && t.upcoming ? t.start + DAY / 3 : clock.now();
     const Rat = w => mem.R(Math.max(0, at - w.mem.lastReview) / DAY, w.mem.S);
     const words = plan.listWords(name).filter(w => w.mem.reps && info.studyable(w) && Rat(w) < 0.9).sort((a, b) => Rat(a) - Rat(b));
-    if (!words.length) { toast('Every studied word looks ready for the test! 🎉'); return; }
+    if (!words.length) { toast('Every studied word looks ready for the test!'); return; }
     runner.start({
       title: 'Test prep', stages: [words.slice(0, 40).map(w => ({ key: w.word, type: null }))],
       requeue: (item, w, ty) => mem.easier(ty, w),
@@ -1663,6 +1686,23 @@ const modes = {
 
 /* ============================== UI helpers ============================== */
 const $ = s => document.querySelector(s);
+// Small line icons, drawn with currentColor so they follow the text colour.
+const ICONS = {
+  book: '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/>',
+  pencil: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  unlock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>',
+  camera: '<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  learn: '<path d="M12 21v-9"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>',
+  practice: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  review: '<path d="m17 2 4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+  volume: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>',
+  flag: '<path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/>',
+  chevron: '<path d="m9 6 6 6-6 6"/>',
+};
+const icon = (name, size = 16) => `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
 function toast(msg, kind = '') {
   if (typeof document === 'undefined') return;
   const el = document.createElement('div');
@@ -1784,26 +1824,25 @@ const ui = {
     return ui.scope ? `<a class="backlink" href="#${esc(ui.listHash(ui.scope))}">← ${esc(ui.scope)}</a>` : `<a class="backlink" href="#home">← All lists</a>`;
   },
   streakHtml() {
-    return db.streak.count && [todayKey(), dayKey(startOfDay(clock.now()) - DAY / 2)].includes(db.streak.last) ? `<div class="streak">🔥 ${plural(db.streak.count, 'day')}</div>` : '';
+    return db.streak.count && [todayKey(), dayKey(startOfDay(clock.now()) - DAY / 2)].includes(db.streak.last) ? `<span class="streak">${db.streak.count}-day streak</span>` : '';
   },
-  goalCard(td, title = "Today's goal") {
-    return `<div class="card">
-        <div class="row"><b>${title}</b><span class="spacer"></span><span class="muted small">${td.done} / ${td.planned} questions</span></div>
-        <div style="margin:8px 0">${pctBar(td.planned ? td.done / td.planned : 1, '', 'var(--good)')}</div>
-        <div class="muted small">${td.newLeft || td.due ? `Still to do: ${plural(td.newLeft, 'new word')} + ${plural(td.due, 'review')} · about ${td.mins} min` : 'All done for today — great work! 🎉'}
-          ${td.overflow ? ` · Busy day: about ${td.overflow} questions can wait until tomorrow.` : ''}</div>
+  goalCard(td, title = "Today's goal", aside = '') {
+    return `<div class="today">
+        <div class="today-head"><b>${title}</b><span class="spacer"></span><span class="muted">${td.done} / ${td.planned} questions</span></div>
+        ${pctBar(td.planned ? td.done / td.planned : 1, '', 'var(--good)')}
+        <div class="row small muted" style="gap:8px"><span>${td.newLeft || td.due ? `Still to do: ${plural(td.newLeft, 'new word')} + ${plural(td.due, 'review')} · about ${td.mins} min` : 'All done for today — great work!'}
+          ${td.overflow ? ` · Busy day: about ${td.overflow} questions can wait until tomorrow.` : ''}</span>${aside}</div>
       </div>`;
   },
   forecastCard(only = '') {
     const fc = plan.forecast(14, only);
     const fmax = Math.max(1, ...fc.map(x => x.rev + x.nw));
-    return `<h2>Next 14 days</h2>
-      <div class="card">
+    return `<div class="sec"><h2>Next 14 days</h2>
         <div class="forecast">${fc.map((x, i) => `<div class="fc-col ${x.test ? 'test' : ''}" title="${fmtDay(x.day)}: ${x.rev} reviews, ${x.nw} new${x.test ? ' · TEST' : ''}">
           <span class="fc-num">${x.rev + x.nw || ''}</span>
           <div class="fc-stack" style="height:${Math.round(80 * (x.rev + x.nw) / fmax)}px"><div class="r" style="flex:${x.rev}"></div><div class="n" style="flex:${x.nw}"></div></div>
-          <span class="fc-lab">${x.test ? '📝' : i === 0 ? 'Today' : new Date(parseDay(x.day)).toLocaleDateString(undefined, { weekday: 'narrow' })}</span></div>`).join('')}</div>
-        <div class="legend"><span><i style="background:var(--primary)"></i>Reviews due</span><span><i style="background:var(--st-learning)"></i>New words planned</span><span>📝 Test day</span></div>
+          <span class="fc-lab">${x.test ? icon('flag', 13) : i === 0 ? 'Today' : new Date(parseDay(x.day)).toLocaleDateString(undefined, { weekday: 'narrow' })}</span></div>`).join('')}</div>
+        <div class="legend"><span><i style="background:var(--primary)"></i>Reviews due</span><span><i style="background:var(--st-learning)"></i>New words planned</span><span>${icon('flag', 13)}Test day</span></div>
       </div>`;
   },
 
@@ -1812,19 +1851,16 @@ const ui = {
     home() {
       const names = Object.keys(db.lists);
       if (!names.length) {
-        return `<div class="card empty" style="margin-top:28px"><div class="emoji">📚</div><h1>Welcome to AceTheWords</h1>
+        return `<div class="card empty" style="margin-top:28px"><div class="eico">${icon('book', 36)}</div><h1>Welcome to AceTheWords</h1>
           <p class="muted">Make a word list for each test or class — like “Lit Midterm” or “Unit 3 vocab”. The app looks up the meanings, then helps you remember them for good with short Learn, Practice and Review sessions.</p>
-          <button class="btn primary big" data-act="newList">＋ Create your first list</button>
+          <button class="btn primary big" data-act="newList">${icon('plus')} Create your first list</button>
           ${gen.hasKey() ? '' : `<p class="small muted" style="margin-top:16px">Tip: add a DeepSeek API key in <a href="#settings">Settings</a> for fill-in-the-blank and usage questions.</p>`}</div>`;
       }
       const td = plan.today();
       return `
-        <div class="list-head" style="margin-top:22px"><h1>Your lists</h1>${ui.streakHtml()}<button class="btn primary" data-act="newList">＋ New list</button></div>
-        ${ui.goalCard(td, 'Today, all lists')}
-        <div class="lists-grid">
-          ${names.map(ui.listTile).join('')}
-          <button class="ltile newtile" data-act="newList"><span style="font-size:30px;line-height:1">＋</span>New list</button>
-        </div>`;
+        <div class="list-head" style="margin-top:22px"><h1>Your lists</h1><button class="btn primary" data-act="newList">${icon('plus')} New list</button></div>
+        <div style="margin:14px 0">${ui.goalCard(td, 'Today, all lists', ui.streakHtml())}</div>
+        <div class="lists-grid">${names.map(ui.listTile).join('')}</div>`;
     },
     // One list's dashboard.
     list() {
@@ -1833,12 +1869,12 @@ const ui = {
       const base = ui.listHash(n);
       const head = `<a class="backlink" href="#home">← All lists</a>
         <div class="list-head"><h1>${esc(n)}</h1>
-          <button class="btn sm ghost" data-act="listWords" data-list="${esc(n)}">📖 Words</button>
-          <button class="btn sm ghost" data-act="editList" data-list="${esc(n)}">⚙️ Edit</button></div>`;
+          <button class="btn sm ghost" data-act="listWords" data-list="${esc(n)}">${icon('book')} Words</button>
+          <button class="btn sm ghost" data-act="editList" data-list="${esc(n)}">${icon('pencil')} Edit</button></div>`;
       if (!all.length) {
-        return head + `<div class="card empty"><div class="emoji">📝</div><h2 style="margin-top:6px">No words in this list yet</h2>
+        return head + `<div class="card empty"><div class="eico">${icon('pencil', 36)}</div><h2 style="margin-top:6px">No words in this list yet</h2>
           <p class="muted">Paste words, or import them from a photo of your vocabulary sheet.</p>
-          <button class="btn primary big" data-act="addToList" data-list="${esc(n)}">＋ Add words</button></div>`;
+          <button class="btn primary big" data-act="addToList" data-list="${esc(n)}">${icon('plus')} Add words</button></div>`;
       }
       const c = stateCounts(ws);
       const pct = ws.length ? Math.round(100 * c.memorized / ws.length) : 0;
@@ -1846,24 +1882,23 @@ const ui = {
       const reviewDue = plan.dueWords(w => w.mem.memorized && inList(w, n)).length;
       const practiceDue = modes.practicePool(false, n).length;
       return head + `
-        <div class="card hero">
-          <div class="hero-top"><div><div class="big">${pct}%</div><div class="muted">memorized · ${c.memorized} of ${ws.length} words</div></div>${ui.streakHtml()}</div>
-          ${stackedBar(c)}
-          <div class="legend">${['memorized', 'practicing', 'learning', 'new'].map(k => `<span><i class="s-${k}" style="background:var(--st-${k})"></i>${STATE_LABEL[k]} ${c[k]}</span>`).join('')}</div>
+        <div class="hero">
+          <div><div class="big">${pct}%</div><div class="muted">memorized · ${c.memorized} of ${ws.length} words</div>
+            ${stackedBar(c)}
+            <div class="legend">${['memorized', 'practicing', 'learning', 'new'].map(k => `<span><i class="s-${k}" style="background:var(--st-${k})"></i>${STATE_LABEL[k]} ${c[k]}</span>`).join('')}</div></div>
+          ${ui.goalCard(td)}
         </div>
-        ${ui.goalCard(td)}
         <div class="modes">
-          <button class="mode" data-act="go" data-to="${esc(base)}/learn"><span class="emoji">🌱</span><span class="mtext"><span class="title">Learn</span><span class="muted small">Meet new words</span><span class="count">${plural(td.newLeft, 'new word')} today</span></span></button>
-          <button class="mode" data-act="go" data-to="${esc(base)}/practice"><span class="emoji">🎯</span><span class="mtext"><span class="title">Practice</span><span class="muted small">Make words stick</span><span class="count">${practiceDue} due</span></span></button>
-          <button class="mode" data-act="go" data-to="${esc(base)}/review"><span class="emoji">🔁</span><span class="mtext"><span class="title">Review</span><span class="muted small">Keep memorized words fresh</span><span class="count">${reviewDue} due · ${c.memorized} memorized</span></span></button>
+          <button class="mode" data-act="go" data-to="${esc(base)}/learn"><span class="mico">${icon('learn', 20)}</span><span class="mtext"><span class="title">Learn</span><span class="muted small">Meet new words</span></span><span class="go"><span class="count">${plural(td.newLeft, 'new word')} today</span>${icon('chevron')}</span></button>
+          <button class="mode" data-act="go" data-to="${esc(base)}/practice"><span class="mico">${icon('practice', 20)}</span><span class="mtext"><span class="title">Practice</span><span class="muted small">Make words stick</span></span><span class="go"><span class="count">${practiceDue} due</span>${icon('chevron')}</span></button>
+          <button class="mode" data-act="go" data-to="${esc(base)}/review"><span class="mico">${icon('review', 20)}</span><span class="mtext"><span class="title">Review</span><span class="muted small">Keep memorized words fresh</span></span><span class="go"><span class="count">${reviewDue} due</span>${icon('chevron')}</span></button>
         </div>
-        <h2>Units & test</h2>
         ${ui.listCard(n)}
         ${ui.forecastCard(n)}`;
     },
     learn() {
       const names = ui.scope ? [ui.scope] : Object.keys(db.lists);
-      return `${ui.backLink()}<h1 style="margin-top:6px">🌱 Learn</h1><p class="muted">Meet new words in small batches: see each word, then answer ${db.settings.learnChecks === 1 ? 'a quick question' : `${['', '', 'two', 'three'][db.settings.learnChecks]} quick questions`} about it.</p>
+      return `${ui.backLink()}<h1 style="margin-top:6px">Learn</h1><p class="help">Meet new words in small batches: see each word, then answer ${db.settings.learnChecks === 1 ? 'a quick question' : `${['', '', 'two', 'three'][db.settings.learnChecks]} quick questions`} about it.</p>
         ${names.map(n => {
           const list = db.lists[n];
           const allow = plan.newAllowance(n), avail = plan.learnQueue(n).length;
@@ -1886,21 +1921,20 @@ const ui = {
       const d = ui.drill;
       if (sc && d.list !== sc) { d.list = sc; d.unit = ''; }
       const learnTo = sc ? `${ui.listHash(sc)}/learn` : 'learn';
-      return `${ui.backLink()}<h1 style="margin-top:6px">🎯 Practice</h1><p class="muted">Questions get harder as each word gets stronger. Words you miss come back a few questions later.</p>
-        <div class="card"><div class="row"><div><b style="font-size:18px">${due ? plural(due, 'word') + ' due' : 'Nothing due right now 🎉'}</b>
+      return `${ui.backLink()}<h1 style="margin-top:6px">Practice</h1><p class="help">Questions get harder as each word gets stronger. Words you miss come back a few questions later.</p>
+        <div class="card"><div class="row"><div><b style="font-size:18px">${due ? plural(due, 'word') + ' due' : 'Nothing due right now'}</b>
           <div class="muted small">${due ? `A session is up to ${db.settings.sessionSize} questions.` : studied ? 'You can still practice your weakest words.' : 'Learn some words first.'}</div></div><span class="spacer"></span>
           ${due ? `<button class="btn primary big" data-act="startPractice" data-list="${esc(sc)}">Start practice</button>` : studied ? `<button class="btn big" data-act="startPractice" data-list="${esc(sc)}" data-extra="1">Extra practice</button>` : `<button class="btn primary" data-act="go" data-to="${esc(learnTo)}">Go to Learn</button>`}</div></div>
-        <h2>Drill one type</h2>
-        <div class="card">
+        <div class="sec"><h2>Drill one type</h2>
           <div class="grid2">${sc ? '' : `<label class="field"><span>List</span><select data-scope="list">${listOptions(d.list)}</select></label>`}
             <label class="field"><span>Unit</span><select data-scope="unit" ${d.list ? '' : 'disabled'}>${unitOptions(d.list, d.unit)}</select></label></div>
           <div class="grid2" style="margin-top:8px">
-            <button class="btn" data-act="startDrill" data-type="meaning">📖 Meaning</button>
-            <button class="btn" data-act="startDrill" data-type="blank">✏️ Fill in the blank</button>
-            <button class="btn" data-act="startDrill" data-type="usage">✅ Correct usage</button>
-            <button class="btn" data-act="startDrill" data-type="card">🃏 Flashcards</button>
+            <button class="btn" data-act="startDrill" data-type="meaning">Meaning</button>
+            <button class="btn" data-act="startDrill" data-type="blank">Fill in the blank</button>
+            <button class="btn" data-act="startDrill" data-type="usage">Correct usage</button>
+            <button class="btn" data-act="startDrill" data-type="card">Flashcards</button>
           </div>
-          ${gen.hasKey() ? '' : `<p class="small muted">Fill-in-the-blank and usage work best with a DeepSeek key (<a href="#settings">Settings</a>).</p>`}
+          ${gen.hasKey() ? '' : `<p class="help">Fill-in-the-blank and usage work best with a DeepSeek key (<a href="#settings">Settings</a>).</p>`}
         </div>`;
     },
     review() {
@@ -1916,15 +1950,14 @@ const ui = {
         if (l.units.length > 1) l.units.forEach((_, i) => scopes.push([`L:${li}:${i}`, `${n} — Unit ${i + 1}`]));
       });
       if (!scopes.some(([v]) => v === r.scope)) r.scope = 'memorized';
-      return `${ui.backLink()}<h1 style="margin-top:6px">🔁 Review</h1><p class="muted">Memorized words still fade over time. Review brings them back right before you'd forget.</p>
+      return `${ui.backLink()}<h1 style="margin-top:6px">Review</h1><p class="help">Memorized words still fade over time. Review brings them back right before you'd forget.</p>
         <div class="card"><div class="row"><div><b style="font-size:18px">${due ? plural(due, 'memorized word') + ' due' : 'No memorized words due'}</b>
           <div class="muted small">${memd} memorized in total</div></div><span class="spacer"></span>
           <button class="btn primary big" data-act="startReviewDue" data-list="${esc(sc)}" ${due ? '' : 'disabled'}>Start review</button></div></div>
-        ${testLists.length ? `<h2>Test prep</h2>${testLists.map(n => { const t = plan.testInfo(db.lists[n]); return `<div class="card"><div class="row"><div><b>${esc(n)}</b> · ${testText(t)}
+        ${testLists.length ? `<div class="sec"><h2>Test prep</h2>${testLists.map(n => { const t = plan.testInfo(db.lists[n]); return `<div class="card"><div class="row"><div><b>${esc(n)}</b> · ${testText(t)}
             <div class="muted small">Practices the words most likely to be forgotten by test day.</div></div><span class="spacer"></span><button class="btn primary" data-act="startTestPrep" data-list="${esc(n)}">Test prep</button></div>
-            <div style="margin-top:10px">${pctBar(plan.readiness(n), '', 'var(--good)')}</div><div class="small muted" style="margin-top:4px">${Math.round(plan.readiness(n) * 100)}% ready</div></div>`; }).join('')}` : ''}
-        <h2>Review anything</h2>
-        <div class="card">
+            <div style="margin-top:10px">${pctBar(plan.readiness(n), '', 'var(--good)')}</div><div class="small muted" style="margin-top:4px">${Math.round(plan.readiness(n) * 100)}% ready</div></div>`; }).join('')}</div>` : ''}
+        <div class="sec"><h2>Review anything</h2>
           <label class="field"><span>Words</span><select data-rev="scope">${scopes.map(([v, l]) => `<option value="${esc(v)}" ${v === r.scope ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
           <div class="grid2">
             <label class="field"><span>Style</span><select data-rev="format"><option value="quiz" ${r.format === 'quiz' ? 'selected' : ''}>Mixed quiz</option><option value="cards" ${r.format === 'cards' ? 'selected' : ''}>Flashcards</option></select></label>
@@ -1946,11 +1979,11 @@ const ui = {
           <label class="check small"><input type="checkbox" id="addShuffle"> Shuffle words before splitting into units</label>
           <div id="addPreview" class="small muted" style="margin:12px 0"></div>
           <button class="btn primary big" data-act="addSubmit">Add & look up</button>
-          ${gen.hasKey() ? '' : `<p class="small muted">No DeepSeek key yet — meanings come from the free dictionary. Add a key in <a href="#settings">Settings</a> for kid-friendly definitions and sentence questions.</p>`}
+          ${gen.hasKey() ? '' : `<p class="help">No DeepSeek key yet — meanings come from the free dictionary. Add a key in <a href="#settings">Settings</a> for kid-friendly definitions and sentence questions.</p>`}
         </div>
-        <div class="card">
-          <b style="font-size:17px">📷 Import from a photo</b>
-          <p class="small muted" style="margin:4px 0 10px">Take a photo of a vocabulary list, worksheet or textbook page. DeepSeek reads it and fills in the word box above so you can check it before adding. The photo is sent to DeepSeek.</p>
+        <div class="sec">
+          <h2>${icon('camera', 18)} Import from a photo</h2>
+          <p class="help">Take a photo of a vocabulary list, worksheet or textbook page. DeepSeek reads it and fills in the word box above so you can check it before adding. The photo is sent to DeepSeek.</p>
           ${gen.hasKey() ? `
           <input type="file" id="photoInput" accept="image/*" multiple>
           <div class="thumbs" id="photoThumbs">${ui.thumbsHtml()}</div>
@@ -1959,7 +1992,7 @@ const ui = {
           <div class="row" style="margin-top:12px"><button class="btn primary" data-act="readPhoto">Read photo</button><span id="photoStatus" class="small muted"></span></div>`
           : `<p class="small">Needs a DeepSeek key — add one in <a href="#settings">Settings</a>.</p>`}
           <details style="margin-top:14px"><summary>Use another AI instead (ChatGPT, Claude, Gemini…)</summary>
-            <p class="small muted" style="margin:4px 0 8px">Copy this prompt, paste it into the other AI together with the photo, then paste its answer into the word box above.</p>
+            <p class="help" style="margin:4px 0 8px">Copy this prompt, paste it into the other AI together with the photo, then paste its answer into the word box above.</p>
             <textarea id="otherAiPrompt" readonly style="min-height:220px;font-size:13px">${esc(otherAiPrompt())}</textarea>
             <button class="btn sm" data-act="copyPrompt" style="margin-top:8px">Copy prompt</button>
           </details>
@@ -1975,24 +2008,28 @@ const ui = {
           <select data-wf="unit" ${f.list ? '' : 'disabled'}>${unitOptions(f.list, f.unit)}</select>
           <select data-wf="state"><option value="">All states</option>${Object.entries(STATE_LABEL).map(([k, v]) => `<option value="${k}" ${f.state === k ? 'selected' : ''}>${v}</option>`).join('')}</select>
         </div>
-        <div class="card" id="wordRows" style="padding:6px 14px">${ui.wordRowsHtml()}</div>`;
+        <div id="wordRows">${ui.wordRowsHtml()}</div>`;
     },
     settings() {
       const s = db.settings;
       return `<h1>Settings</h1>
-        <div class="card">
-          <h2 style="margin-top:0">DeepSeek API</h2>
-          <p class="small muted">Used once per word to write kid-friendly definitions, fill-in-the-blank sentences and usage questions (they are saved, so studying makes no calls), and to read photos of word lists. Your key is saved only in this browser on this device and is never included in exports.</p>
+        <div class="sec">
+          <h2>DeepSeek API</h2>
+          <ul class="help">
+            <li>Writes definitions, fill-in-the-blank sentences and usage questions once per word. They are saved, so studying makes no calls.</li>
+            <li>Also reads photos of word lists.</li>
+            <li>Your key stays in this browser and is never included in exports.</li>
+          </ul>
           <label class="field"><span>API key</span><div class="row" style="flex-wrap:nowrap"><input type="password" id="keyInput" data-set="deepseekKey" value="${esc(s.deepseekKey)}" placeholder="sk-…" autocomplete="off"><button class="btn sm" data-act="toggleKey">Show</button></div></label>
           <label class="field"><span>Model</span><select data-set="model">
             ${[['deepseek-flash', 'deepseek-flash — V4.1 Flash (recommended, reads photos)'], ['deepseek-v4-pro', 'deepseek-v4-pro — V4 Pro (stronger writing, ~3× cost, no photos)'],
               ...(['deepseek-flash', 'deepseek-v4-pro'].includes(s.model) ? [] : [[s.model, s.model + ' (custom)']])]
               .map(([v, l]) => `<option value="${esc(v)}" ${v === s.model ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></label>
           <div class="row"><button class="btn" data-act="testKey">Test key</button><button class="btn" data-act="genMissing">Generate missing content</button>${gen.outdated().length ? `<button class="btn" data-act="regenOutdated">Rewrite older questions (${gen.outdated().length})</button>` : ''}<span id="keyStatus" class="small muted"></span></div>
-          ${gen.outdated().length ? `<p class="small muted">${plural(gen.outdated().length, 'word')} still ${gen.outdated().length === 1 ? 'has' : 'have'} questions from an older, easier prompt. Rewriting makes one DeepSeek request per word; progress is kept.</p>` : ''}
+          ${gen.outdated().length ? `<p class="help">${plural(gen.outdated().length, 'word')} still ${gen.outdated().length === 1 ? 'has' : 'have'} questions from an older, easier prompt. Rewriting makes one DeepSeek request per word; progress is kept.</p>` : ''}
         </div>
-        <div class="card">
-          <h2 style="margin-top:0">Student</h2>
+        <div class="sec">
+          <h2>Student</h2>
           <div class="grid2">
             <label class="field"><span>Grade level</span><select data-set="grade">${Array.from({ length: 10 }, (_, i) => i + 3).map(g => `<option value="${g}" ${Number(s.grade) === g ? 'selected' : ''}>Grade ${g}</option>`).join('')}</select></label>
             <label class="field"><span>Target recall: ${Math.round(s.retention * 100)}%</span><input type="range" min="0.8" max="0.95" step="0.01" data-set="retention" value="${s.retention}" style="width:100%"></label>
@@ -2000,22 +2037,22 @@ const ui = {
             <label class="field"><span>Daily question limit</span><input type="number" min="10" max="400" data-set="dailyCap" value="${s.dailyCap}"></label>
             <label class="field"><span>Practice session length</span><input type="number" min="5" max="60" data-set="sessionSize" value="${s.sessionSize}"></label>
             <label class="field"><span>Learn batch size (3–100)</span><input type="number" min="3" max="100" data-set="batchSize" value="${s.batchSize}">
-              ${s.batchSize > 15 ? `<span class="small muted" style="display:block;margin-top:4px">Long sessions: about ${Math.round(s.batchSize * (1 + Number(s.learnChecks)) * 10 / 60)} min each. 5–10 words per batch is easier to remember.</span>` : ''}</label>
+              ${s.batchSize > 15 ? `<span class="help" style="display:block;margin:4px 0 0">Long sessions: about ${Math.round(s.batchSize * (1 + Number(s.learnChecks)) * 10 / 60)} min each. 5–10 words per batch is easier to remember.</span>` : ''}</label>
             <label class="field"><span>Quick checks per new word</span><select data-set="learnChecks">${[[1, '1 — lightest'], [2, '2 of 3, picked at random (recommended)'], [3, 'All 3']].map(([v, l]) => `<option value="${v}" ${Number(s.learnChecks) === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
           </div>
           <button class="btn sm" data-act="recommendedSettings">Use recommended settings</button>
-          <p class="small muted">Target recall is how sure the app wants to be that a word is still remembered before reviewing it. Higher means more reviews. It rises automatically in the week before a test.</p>
+          <p class="help" style="margin-top:12px"><b>Target recall</b> is how sure the app wants to be that a word is still remembered before it reviews it. Higher means more reviews. It rises automatically in the week before a test.</p>
         </div>
         ${ui.speedCard()}
-        <div class="card">
-          <h2 style="margin-top:0">Data</h2>
+        <div class="sec">
+          <h2>Data</h2>
           <div class="row"><button class="btn" data-act="exportData">Export backup</button><button class="btn" data-act="importData">Import backup</button>
             <button class="btn" data-act="retryLookups">Retry failed lookups</button><span class="spacer"></span><button class="btn danger" data-act="resetAll">Erase everything</button></div>
-          <p class="small muted">Progress is saved in this browser. Export a backup now and then so it isn't lost if browser data is cleared.</p>
+          <p class="help" style="margin-top:12px">Progress is saved in this browser. Export a backup now and then so it isn't lost if browser data is cleared.</p>
         </div>
-        <div class="card small muted">
-          <b>How the memory model works.</b> AceTheWords uses FSRS-5, the spaced-repetition model behind Anki's modern scheduler. It tracks each word's <i>stability</i> (how many days until the chance of remembering drops to 90%) and <i>difficulty</i>, and predicts the chance of remembering it right now. Correct answers on harder questions and answers after longer gaps grow stability the most (the spacing and testing effects). A word counts as memorized once it is stable enough, has been recalled on 3 separate days, and passed a hard question.
-        </div>`;
+        <details class="sec help"><summary style="font-size:15px;color:var(--text)">How the memory model works</summary>
+          AceTheWords uses FSRS-5, the spaced-repetition model behind Anki's modern scheduler. It tracks each word's <i>stability</i> (how many days until the chance of remembering drops to 90%) and <i>difficulty</i>, and predicts the chance of remembering it right now. Correct answers on harder questions and answers after longer gaps grow stability the most (the spacing and testing effects). A word counts as memorized once it is stable enough, has been recalled on 3 separate days, and passed a hard question.
+        </details>`;
     },
   },
 
@@ -2027,13 +2064,17 @@ const ui = {
       ['Too-fast right answer (possible guess)', { g: 3, z: -2, fast: true }], ['Slow wrong answer', { g: 1, z: 1.5 }], ['Quick wrong answer', { g: 1, z: -1.5 }],
     ];
     const typical = Object.keys(RT_DEFAULT).filter(t => db.rt?.[t]?.length >= 5).map(t => `${TYPE_LABEL[t]} ${(Math.exp(rt.stats(t).mu) / 1000).toFixed(1)}s`);
-    return `<div class="card">
-      <h2 style="margin-top:0">Answer speed</h2>
-      <p class="small muted">A hidden timer measures how long each answer takes, compared with this student's usual time for that kind of question. Quick right answers count as stronger memory and push the next review later; slow ones, and answers too fast to have been read, bring it sooner. A small model learns from this student's own answers how much speed really matters.</p>
+    return `<div class="sec">
+      <h2>Answer speed</h2>
+      <ul class="help">
+        <li>A hidden timer measures each answer against this student's usual time for that kind of question.</li>
+        <li>Quick right answers count as stronger memory and push the next review later. Slow ones, and answers too fast to have been read, bring it sooner.</li>
+        <li>A small model learns from this student's own answers how much speed really matters.</li>
+      </ul>
       <label class="check"><input type="checkbox" data-set="useSpeed" ${on ? 'checked' : ''}> Use answer speed for scheduling</label>
-      ${on ? `<div class="kv" style="margin-top:10px">${rows.map(([l, h]) => `<div>${l}<b>${pctTxt(model.gapFactor(h))}</b></div>`).join('')}</div>
-      <p class="small muted">Change to the next review gap compared with a normal-speed answer with the same result (right or wrong).</p>` : ''}
-      <p class="small muted">${m.n ? `Learned from ${plural(m.n, 'later-day answer')}.` : 'Still using the starting weights; it learns from answers on later days.'}
+      ${on ? `<div class="kv rows" style="margin-top:10px">${rows.map(([l, h]) => `<div><span>${l}</span><b>${pctTxt(model.gapFactor(h))}</b></div>`).join('')}</div>
+      <p class="help">Change to the next review gap compared with a normal-speed answer with the same result (right or wrong).</p>` : ''}
+      <p class="help">${m.n ? `Learned from ${plural(m.n, 'later-day answer')}.` : 'Still using the starting weights; it learns from answers on later days.'}
         ${sc ? ` Over the last ${sc.n}, its predictions were ${sc.better >= 0 ? `${Math.round(sc.better * 100)}% more accurate` : `${Math.round(-sc.better * 100)}% less accurate`} than the memory model alone (log loss).` : ''}
         ${typical.length ? `<br>Usual times: ${typical.join(' · ')}.` : ''}</p>
       <details><summary class="small">Model weights</summary><div class="small muted">${MODEL_LABELS.map((l, i) => `${l}: ${m.w[i].toFixed(2)} <span class="muted">(start ${MODEL_PRIOR[i]})</span>`).join('<br>')}</div></details>
@@ -2049,25 +2090,24 @@ const ui = {
     const td = plan.today(n);
     const status = !all.length ? 'No words yet — tap to add some' : td.newLeft || td.due ? `${plural(td.newLeft, 'new word')} + ${td.due} due today` : '✓ Done for today';
     return `<a class="ltile" href="#${esc(ui.listHash(n))}">
-      <div class="row" style="flex-wrap:nowrap"><span class="lname">${esc(n)}</span><span class="spacer"></span>${t && t.upcoming ? `<span class="chip ${t.d <= 3 ? 'learning' : ''}">📝 ${testText(t)}</span>` : ''}</div>
+      <span class="lname">${esc(n)}</span>
+      <div class="lpct">${pct}%<small>memorized</small></div>
       <div class="muted small">${plural(all.length, 'word')} · ${plural(list.units.length, 'unit')}</div>
-      <div class="row" style="align-items:baseline;gap:6px"><span class="lpct">${pct}%</span><span class="muted small">memorized</span></div>
-      ${stackedBar(c, '')}
-      <div class="lstatus">${status}</div>
+      ${stackedBar(c, 'thin')}
+      <div class="lfoot"><span class="lstatus">${status}</span>${t && t.upcoming ? `<span class="chip ${t.d <= 3 ? 'learning' : ''}">${testText(t)}</span>` : ''}</div>
     </a>`;
   },
   listCard(n) {
     const list = db.lists[n];
     const ws = plan.listWords(n).filter(info.studyable);
-    const c = stateCounts(ws);
     const t = plan.testInfo(list);
     const ready = plan.readiness(n);
-    return `<div class="card">
-      <div class="row"><b style="font-size:18px">${esc(n)}</b><span class="muted small">${plural(ws.length, 'word')} · ${plural(list.units.length, 'unit')}</span><span class="spacer"></span>
-        <button class="btn sm ghost" data-act="editTest" data-list="${esc(n)}">📅 ${list.testDate ? 'Test date' : 'Set test date'}</button>
-        <button class="btn sm ghost" data-act="addToList" data-list="${esc(n)}">＋ Words</button></div>
-      <div style="margin-top:10px">${stackedBar(c, '')}</div>
-      ${t && t.upcoming ? `<div class="row small" style="margin-top:12px"><b>${testText(t)}</b><span class="muted">${fmtDay(list.testDate)}</span><span class="spacer"></span><b class="${ready >= 0.8 ? 'ok' : ''}">${Math.round(ready * 100)}% ready</b></div>
+    return `<div class="sec">
+      <div class="row" style="margin-top:14px"><h2 style="margin:0">Units & test</h2><span class="spacer"></span>
+        <button class="btn sm ghost" data-act="editTest" data-list="${esc(n)}">${icon('calendar')} ${list.testDate ? 'Test date' : 'Set test date'}</button>
+        <button class="btn sm ghost" data-act="addToList" data-list="${esc(n)}">${icon('plus')} Words</button></div>
+      <div class="muted small" style="margin-top:4px">${plural(ws.length, 'word')} · ${plural(list.units.length, 'unit')}</div>
+      ${t && t.upcoming ? `<div class="row small" style="margin-top:14px"><b>${testText(t)}</b><span class="muted">${fmtDay(list.testDate)}</span><span class="spacer"></span><b class="${ready >= 0.8 ? 'ok' : ''}">${Math.round(ready * 100)}% ready</b></div>
         <div style="margin-top:6px" title="Average predicted chance of remembering each word on test day">${pctBar(ready, '', 'var(--good)')}</div>` : ''}
       ${ui.unitTrack(n)}
       ${plan.warnings(n).map(w => `<div class="warnbox">${esc(w)}</div>`).join('')}
@@ -2079,9 +2119,9 @@ const ui = {
     const cur = units.currentUnit(list);
     return `<div class="units">${list.units.map((u, i) => {
       const locked = i >= list.unlocked; const p = units.progress(list, i);
-      return `<div class="unit ${locked ? 'locked' : ''} ${i === cur && !locked ? 'cur' : ''}"><b>${locked ? '🔒 ' : p >= 0.999 ? '✓ ' : ''}Unit ${i + 1}</b><span class="muted">${Math.round(p * 100)}% · ${u.length} words</span>${pctBar(p, 'thin', 'var(--st-memorized)')}</div>`;
+      return `<div class="unit ${locked ? 'locked' : ''} ${i === cur && !locked ? 'cur' : ''}"><b>${locked ? icon('lock', 13) : p >= 0.999 ? '✓' : ''}Unit ${i + 1}</b><span class="muted">${Math.round(p * 100)}% · ${u.length} words</span>${pctBar(p, 'thin', 'var(--st-memorized)')}</div>`;
     }).join('')}</div>
-    ${list.unlocked < list.units.length ? `<div style="margin-top:8px"><button class="btn sm ghost" data-act="unlockNext" data-list="${esc(n)}">🔓 Unlock Unit ${list.unlocked + 1} now</button></div>` : ''}`;
+    ${list.unlocked < list.units.length ? `<div style="margin-top:8px"><button class="btn sm ghost" data-act="unlockNext" data-list="${esc(n)}">${icon('unlock')} Unlock Unit ${list.unlocked + 1} now</button></div>` : ''}`;
   },
   wordRowsHtml() {
     const f = ui.wf;
@@ -2149,7 +2189,7 @@ const ui = {
         const d = daysUntil(test);
         const per = Math.max(db.settings.newPerDay, Math.ceil(adding.length / Math.max(1, d - 2)));
         msg += ` · ${per} new words a day, all learned ${Math.ceil(adding.length / per) <= 1 ? 'today' : `in ${Math.ceil(fresh.length / per)} days`}, then reviews until the test`;
-        if (per > 25) msg += ' ⚠️ that is a heavy load';
+        if (per > 25) msg += ' · that is a heavy load';
       }
     }
     el.textContent = msg;
