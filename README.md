@@ -21,7 +21,7 @@ A free, single-file web app that looks up your words, quizzes you, and schedules
 Prefer the command line?
 
 ```bash
-git clone https://github.com/yuranprivate1019-rgb/acethewords.git
+git clone https://github.com/itsyuranwei/acethewords.git
 ```
 
 Then open `acethewords/acethewords.html` in Chrome, Edge, Safari or Firefox.
