@@ -5,6 +5,8 @@ A free, single-file web app that looks up your words, quizzes you, and schedules
 
 <p align="center">
   <a href="docs/AceTheWords-User-Manual.pdf"><img alt="Read the User Manual (PDF)" src="https://img.shields.io/badge/%F0%9F%93%98%20READ%20THE%20USER%20MANUAL-PDF-5b5bd6?style=for-the-badge"></a>
+  &nbsp;
+  <a href="https://itsyuranwei.github.io/acethewords/"><img alt="Use it online" src="https://img.shields.io/badge/%E2%96%B6%20USE%20IT%20ONLINE-no%20download-16955a?style=for-the-badge"></a>
 </p>
 
 > ### 📘 New here? Start with the [**User Manual (PDF)**](docs/AceTheWords-User-Manual.pdf)
@@ -13,6 +15,10 @@ A free, single-file web app that looks up your words, quizzes you, and schedules
 ---
 
 ## Quick start
+
+**Fastest:** open **https://itsyuranwei.github.io/acethewords/** — the app runs right in your browser.
+
+**Or download your own copy:**
 
 1. Click the green **Code** button near the top of this page, then **Download ZIP**.
 2. Unzip the downloaded file.
@@ -25,6 +31,8 @@ git clone https://github.com/itsyuranwei/acethewords.git
 ```
 
 Then open `acethewords/acethewords.html` in Chrome, Edge, Safari or Firefox.
+
+> Progress is saved per browser *and* per location, so the online version and a downloaded copy each keep their own progress. Use **Settings → Export / Import backup** to move between them.
 
 ## What it does
 
@@ -40,6 +48,7 @@ Then open `acethewords/acethewords.html` in Chrome, Edge, Safari or Firefox.
 | File | What it is |
 | --- | --- |
 | `acethewords.html` | The whole app. Open it in a browser. |
+| `index.html` | Sends the online version's home page to the app. |
 | `docs/AceTheWords-User-Manual.pdf` | The illustrated user manual. |
 
 ## Privacy
